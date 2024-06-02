@@ -17,5 +17,6 @@ fun Application.configureRouting(
         login(tokenConfig, tokenService)
         getSecretInfo()
         kyc()
+        dematAccount()
     }
 }
