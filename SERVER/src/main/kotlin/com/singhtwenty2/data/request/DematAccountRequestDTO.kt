@@ -4,7 +4,7 @@ import com.singhtwenty2.data.request.enums.NomineeRelation
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class CreateDematAccountDTO(
+data class DematAccountRequestDTO(
     val accountHolderName: String,
     val phoneNumber: String,
     val address: String,

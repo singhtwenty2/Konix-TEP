@@ -1,7 +1,7 @@
 package com.singhtwenty2.data.dao
 
 import com.singhtwenty2.data.entity.DematAccounts
-import com.singhtwenty2.data.request.CreateDematAccountDTO
+import com.singhtwenty2.data.request.DematAccountRequestDTO
 import com.singhtwenty2.data.response.DematAccountResponseDTO
 import com.singhtwenty2.util.DematAccountCreationResult
 import org.jetbrains.exposed.sql.insert
@@ -11,7 +11,7 @@ import java.time.LocalDate
 
 object DematAccountDAO {
 
-    fun createDematAccount(userId: Int, createDematAccountDTO: CreateDematAccountDTO): DematAccountCreationResult {
+    fun createDematAccount(userId: Int, dematAccountRequestDTO: DematAccountRequestDTO): DematAccountCreationResult {
         return transaction {
             val existingRecord = DematAccounts.select { DematAccounts.userId eq userId }.singleOrNull()
             if (existingRecord != null) {
@@ -21,14 +21,14 @@ object DematAccountDAO {
                 it[DematAccounts.userId] = userId
                 it[accountNumber] = generateAccountNumber()
                 it[accountStatus] = "ACTIVE"
-                it[brokerName] = createDematAccountDTO.brokerName
+                it[brokerName] = dematAccountRequestDTO.brokerName
                 it[balance] = 5000.toBigDecimal()
-                it[accountHolderName] = createDematAccountDTO.accountHolderName
-                it[nominee] = createDematAccountDTO.nominee
-                it[nomineeRelation] = createDematAccountDTO.nomineeRelation.name
-                it[address] = createDematAccountDTO.address
-                it[phoneNumber] = createDematAccountDTO.phoneNumber
-                it[panNumber] = createDematAccountDTO.panNumber
+                it[accountHolderName] = dematAccountRequestDTO.accountHolderName
+                it[nominee] = dematAccountRequestDTO.nominee
+                it[nomineeRelation] = dematAccountRequestDTO.nomineeRelation.name
+                it[address] = dematAccountRequestDTO.address
+                it[phoneNumber] = dematAccountRequestDTO.phoneNumber
+                it[panNumber] = dematAccountRequestDTO.panNumber
                 it[openingDate] = LocalDate.now().toString()
             }
             DematAccountCreationResult.Success

@@ -1,4 +1,4 @@
-package com.singhtwenty2.routing
+package com.singhtwenty2.app_routing
 
 import com.singhtwenty2.data.dao.UserDAO
 import com.singhtwenty2.data.request.LoginRequestDTO

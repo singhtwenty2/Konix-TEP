@@ -1,7 +1,7 @@
-package com.singhtwenty2.routing
+package com.singhtwenty2.app_routing
 
 import com.singhtwenty2.data.dao.DematAccountDAO
-import com.singhtwenty2.data.request.CreateDematAccountDTO
+import com.singhtwenty2.data.request.DematAccountRequestDTO
 import com.singhtwenty2.util.DematAccountCreationResult
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -16,11 +16,11 @@ fun Route.dematAccount() {
         post("/demat") {
             val principal = call.principal<JWTPrincipal>()
             val userId = principal?.getClaim("userId", String::class)
-            val request = call.receive<CreateDematAccountDTO>()
+            val request = call.receive<DematAccountRequestDTO>()
             userId?.let {
                 val result = DematAccountDAO.createDematAccount(
                     userId = userId.toInt(),
-                    createDematAccountDTO = request
+                    dematAccountRequestDTO = request
                 )
                 when (result) {
                     is DematAccountCreationResult.Success -> {
