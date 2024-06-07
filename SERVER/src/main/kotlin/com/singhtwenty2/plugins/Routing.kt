@@ -20,5 +20,6 @@ fun Application.configureRouting(
         exchanges()
         company()
         companyExchange()
+        stockPrice()
     }
 }

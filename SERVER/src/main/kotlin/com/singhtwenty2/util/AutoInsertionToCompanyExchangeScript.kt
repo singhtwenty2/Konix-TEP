@@ -2,8 +2,9 @@ package com.singhtwenty2.util
 
 import com.singhtwenty2.data.dao.CompanyExchangeDAO
 import com.singhtwenty2.data.request.CompanyExchangeRequestDTO
+import io.ktor.server.application.*
 
-fun autoInsertionToCompanyExchangeScript() {
+fun Application.autoInsertionToCompanyExchangeScript() {
     val exchanges = listOf(1, 2)
     val companies = (45..50).toList()
 

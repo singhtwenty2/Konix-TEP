@@ -48,4 +48,8 @@ dependencies {
     runtimeOnly("mysql:mysql-connector-java:8.0.28")
     // Hashing
     implementation("commons-codec:commons-codec:$commons_codec_version")
+    // Kotlin standard library
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.8.21")
+    // Coroutine support
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.0")
 }

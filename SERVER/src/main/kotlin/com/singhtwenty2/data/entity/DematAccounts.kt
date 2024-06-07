@@ -14,8 +14,10 @@ object DematAccounts : Table() {
     val address = text("address")
     val panNumber = varchar("pan_number", 20).uniqueIndex()
     val nominee = varchar("nominee", 100)
+    @OptIn(ExperimentalStdlibApi::class)
     val nomineeRelation = varchar("nominee_relation", 50).check { it -> it inList NomineeRelation.entries.map { it.name } }
     val openingDate = varchar("opening_date", 20)
+    @OptIn(ExperimentalStdlibApi::class)
     val accountStatus = varchar("account_status", 50).check { it -> it inList AccountStatus.entries.map { it.name } }
     val brokerName = varchar("broker_name", 100)
     val balance = decimal("balance", 10, 2)

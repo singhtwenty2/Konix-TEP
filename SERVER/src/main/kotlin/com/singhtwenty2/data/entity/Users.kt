@@ -8,6 +8,7 @@ object Users : Table() {
     val name = varchar("name", 100)
     val email = varchar("email", 100).uniqueIndex()
     val age = integer("age")
+    @OptIn(ExperimentalStdlibApi::class)
     val gender = varchar("gender", 50).check { it -> it inList Gender.entries.map { it.name } }
     val password = varchar("hashed_password", 100)
     val salt = varchar("salt", 100)

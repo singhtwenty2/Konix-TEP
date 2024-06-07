@@ -11,8 +11,11 @@ object KYC : Table() {
     val address = text("address")
     val aadharNumber = varchar("aadhar_number", 20)
     val panNumber = varchar("pan_number", 20)
+    @OptIn(ExperimentalStdlibApi::class)
     val employmentStatus = varchar("employment_status", 50).check { it -> it inList EmploymentStatus.entries.map { it.name } }
+    @OptIn(ExperimentalStdlibApi::class)
     val investmentExperience = varchar("investment_experience", 50).check { it -> it inList InvestmentExperience.entries.map { it.name } }
+    @OptIn(ExperimentalStdlibApi::class)
     val riskTolerance = varchar("risk_tolerance", 50).check { it -> it inList RiskTolerance.entries.map { it.name } }
     val annualIncome = integer("annual_income")
     override val primaryKey = PrimaryKey(userId)
