@@ -12,7 +12,7 @@ import io.ktor.server.routing.*
 
 fun Route.kyc() {
     authenticate {
-        post("/kyc") {
+        post("/api/v1/kyc") {
             val requestDTO = call.receive<KYCDTO>()
             val principal = call.principal<JWTPrincipal>()
             val userId = principal?.getClaim("userId", String::class)
@@ -21,7 +21,7 @@ fun Route.kyc() {
                 call.respond(HttpStatusCode.OK, "KYC Done Successfully...")
             } ?: call.respond(HttpStatusCode.Unauthorized)
         }
-        get("/kyc") {
+        get("/api/v1/kyc") {
             val principal = call.principal<JWTPrincipal>()
             val userId = principal?.getClaim("userId", String::class)
             userId?.let {

@@ -22,7 +22,7 @@ fun Route.welcome() {
 }
 
 fun Route.signup() {
-    post("/signup") {
+    post("/api/v1/signup") {
         val requestDTO = call.receive<SignupRequestDTO>()
         UserDAO.createUser(requestDTO)
         call.respond(HttpStatusCode.OK, "Created Account Successfully...")
@@ -33,7 +33,7 @@ fun Route.login(
     tokenConfig: TokenConfig,
     tokenService: TokenService
 ) {
-    post("/login") {
+    post("/api/v1/login") {
         val requestDTO = call.receive<LoginRequestDTO>()
         val user = UserDAO.loginUser(requestDTO)
         if(user != null) {
@@ -60,7 +60,7 @@ fun Route.login(
 
 fun Route.getSecretInfo() {
     authenticate {
-        get("secret") {
+        get("/api/v1/secret") {
             val principal = call.principal<JWTPrincipal>()
             val userId = principal?.getClaim("userId", String::class)
             call.respond(HttpStatusCode.OK, "Your User Id Is $userId")

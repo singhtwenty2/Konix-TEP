@@ -13,7 +13,7 @@ import io.ktor.server.routing.*
 
 fun Route.dematAccount() {
     authenticate {
-        post("/demat") {
+        post("/api/v1/demat") {
             val principal = call.principal<JWTPrincipal>()
             val userId = principal?.getClaim("userId", String::class)
             val request = call.receive<DematAccountRequestDTO>()
@@ -33,7 +33,7 @@ fun Route.dematAccount() {
             } ?: call.respond(HttpStatusCode.Unauthorized)
         }
 
-        get("/demat") {
+        get("/api/v1/demat") {
             val principal = call.principal<JWTPrincipal>()
             val userId = principal?.getClaim("userId", String::class)
             userId?.let {

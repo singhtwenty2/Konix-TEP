@@ -11,13 +11,13 @@ import io.ktor.server.routing.*
 
 fun Route.exchanges() {
     authenticate {
-        post("/exchanges") {
+        post("/api/v1/exchanges") {
             val requestDTO = call.receive<ExchangeRequestDTO>()
             ExchangeDAO.insertExchange(requestDTO)
             call.respond(HttpStatusCode.OK, "Exchange values uploaded successfully...")
         }
 
-        get("/exchanges/{id}") {
+        get("/api/v1/exchanges/{id}") {
             val id = call.parameters["id"]?.toIntOrNull()
             id?.let {
                 val response = ExchangeDAO.getExchanges(id)

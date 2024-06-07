@@ -2,9 +2,12 @@ package com.singhtwenty2.data.dao
 
 import com.singhtwenty2.data.entity.Companies
 import com.singhtwenty2.data.request.CompanyRequestDTO
+import com.singhtwenty2.data.response.CompaniesMetadataResponseDTO
 import com.singhtwenty2.data.response.CompanyResponseDTO
+import com.singhtwenty2.data.response.PaginatedResponseDTO
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 
 object CompanyDAO {
@@ -47,5 +50,34 @@ object CompanyDAO {
                     )
                 }
         }
+    }
+
+    fun getAllCompanies(
+        page: Int,
+        size: Int
+    ): PaginatedResponseDTO<CompaniesMetadataResponseDTO> {
+        val totalCompanies = transaction {
+            Companies.selectAll().count()
+        }
+        val companies = transaction {
+            Companies.selectAll()
+                .limit(
+                    n = size,
+                    offset = ((page - 1) * size).toLong()
+                ).map {
+                    CompaniesMetadataResponseDTO(
+                        id = it[Companies.companyId],
+                        name = it[Companies.name],
+                        symbol = it[Companies.symbol],
+                        marketCap = it[Companies.marketCap].toDouble()
+                    )
+                }
+        }
+        return PaginatedResponseDTO(
+            totalItems = (totalCompanies).toInt(),
+            totalPages = ((totalCompanies + size -1) / size).toInt(),
+            currentPage = page,
+            items = companies
+        )
     }
 }
