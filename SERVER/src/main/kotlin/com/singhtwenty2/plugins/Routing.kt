@@ -19,5 +19,6 @@ fun Application.configureRouting(
         dematAccount()
         exchanges()
         company()
+        companyExchange()
     }
 }

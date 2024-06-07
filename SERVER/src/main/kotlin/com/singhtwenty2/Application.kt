@@ -3,6 +3,7 @@ package com.singhtwenty2
 import com.singhtwenty2.data.security.token.JwtTokenService
 import com.singhtwenty2.data.security.token.TokenConfig
 import com.singhtwenty2.plugins.*
+import com.singhtwenty2.util.autoInsertionToCompanyExchangeScript
 import io.ktor.server.application.*
 
 fun main(args: Array<String>) {
@@ -26,4 +27,5 @@ fun Application.module() {
     configureHTTP()
     configureSecurity(tokenConfig)
     configureRouting(tokenConfig, tokenService)
+    //autoInsertionToCompanyExchangeScript()
 }
