@@ -1,5 +1,6 @@
 package com.singhtwenty2.data.repository.dao
 
+import com.singhtwenty2.data.dto.request.CompleteSignupRequestDTO
 import com.singhtwenty2.data.dto.request.LoginRequestDTO
 import com.singhtwenty2.data.dto.request.SignupRequestDTO
 import com.singhtwenty2.data.dto.request.enums.Gender
@@ -15,23 +16,23 @@ object UserDAO {
 
     private val hashingService = SHA256HashingService()
 
-    fun createUser(signupRequestDTO: SignupRequestDTO): RecordCreationErrorHandler {
+    fun createUser(completeSignupRequestDTO: CompleteSignupRequestDTO): RecordCreationErrorHandler {
 
         val saltedHash = hashingService.generateSaltedHash(
-            value = signupRequestDTO.password
+            value = completeSignupRequestDTO.password
         )
 
         return transaction {
-            val existingRecord = Users.select { Users.email eq signupRequestDTO.email }.singleOrNull()
+            val existingRecord = Users.select { Users.email eq completeSignupRequestDTO.email }.singleOrNull()
             if (existingRecord != null) {
                 return@transaction RecordCreationErrorHandler
                     .AlreadyExists("Account Already Exits With The Given Email...")
             } else {
                 Users.insert {
-                    it[name] = signupRequestDTO.name
-                    it[email] = signupRequestDTO.email
-                    it[age] = signupRequestDTO.age
-                    it[gender] = signupRequestDTO.gender.name
+                    it[name] = completeSignupRequestDTO.name
+                    it[email] = completeSignupRequestDTO.email
+                    it[age] = completeSignupRequestDTO.age
+                    it[gender] = completeSignupRequestDTO.gender.name
                     it[password] = saltedHash.hash
                     it[salt] = saltedHash.salt
                 }
@@ -68,6 +69,13 @@ object UserDAO {
                     return@transaction null
                 }
             }
+        }
+    }
+
+    fun checkUserExists(email: String): Boolean {
+        return transaction {
+            val userRow = Users.select { Users.email eq email }.singleOrNull()
+            userRow != null
         }
     }
 }

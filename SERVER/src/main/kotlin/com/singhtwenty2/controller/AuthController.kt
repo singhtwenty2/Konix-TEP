@@ -2,11 +2,14 @@ package com.singhtwenty2.controller
 
 import com.singhtwenty2.data.dto.request.LoginRequestDTO
 import com.singhtwenty2.data.dto.request.SignupRequestDTO
+import com.singhtwenty2.data.dto.request.CompleteSignupRequestDTO
 import com.singhtwenty2.data.dto.response.LoginResponseDTO
 import com.singhtwenty2.data.repository.dao.UserDAO
 import com.singhtwenty2.security.token.TokenClaim
 import com.singhtwenty2.security.token.TokenConfig
 import com.singhtwenty2.security.token.TokenService
+import com.singhtwenty2.service.auth.EmailService
+import com.singhtwenty2.service.auth.OtpService
 import com.singhtwenty2.util.RecordCreationErrorHandler
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -22,26 +25,74 @@ fun Route.welcome() {
     }
 }
 
-fun Route.signup() {
+fun Route.signup(
+    emailService: EmailService,
+    otpService: OtpService
+) {
     post("/api/v1/signup") {
         val requestDTO = call.receive<SignupRequestDTO>()
+        val userEmail = requestDTO.email
 
-        when (val result = UserDAO.createUser(requestDTO)) {
-            is RecordCreationErrorHandler.AlreadyExists -> {
-                call.respond(
+        if(UserDAO.checkUserExists(email = userEmail)) {
+            call
+                .respond(
                     HttpStatusCode.Conflict,
-                    message = result.errorMessage
+                    "User Already Exists With This Email $userEmail..."
                 )
-            }
-
-            is RecordCreationErrorHandler.Success -> {
+            return@post
+        } else {
+            if(emailService.sendOtpAsEmail(
+                userEmail = userEmail,
+                otp = otpService.generateOtp()
+            )) {
                 call.respond(
                     HttpStatusCode.OK,
-                    message = result.successMessage
+                    "OTP Sent To $userEmail..."
                 )
+                otpService.saveOtpInDb(userEmail)
+                return@post
+            } else {
+                call.respond(
+                    HttpStatusCode.InternalServerError,
+                    "Failed To Send OTP To $userEmail..."
+                )
+                return@post
             }
         }
+    }
 
+    post("/api/v1/verifyOtp") {
+        val requestDTO = call.receive<CompleteSignupRequestDTO>()
+
+        if(
+            otpService.verifyOtp(
+                userEmail = requestDTO.email,
+                otp = requestDTO.otp
+            )
+        ) {
+            when(UserDAO.createUser(requestDTO)) {
+                is RecordCreationErrorHandler.Success -> {
+                    call.respond(
+                        HttpStatusCode.OK,
+                        "User Created Successfully..."
+                    )
+                    return@post
+                }
+                is RecordCreationErrorHandler.AlreadyExists -> {
+                    call.respond(
+                        HttpStatusCode.Conflict,
+                        "User Already Exists With This Email ${requestDTO.email}..."
+                    )
+                    return@post
+                }
+            }
+        } else {
+            call.respond(
+                HttpStatusCode.BadRequest,
+                "Invalid OTP..."
+            )
+            return@post
+        }
     }
 }
 
