@@ -1,9 +1,8 @@
 package com.singhtwenty2
 
-import com.singhtwenty2.data.security.token.JwtTokenService
-import com.singhtwenty2.data.security.token.TokenConfig
-import com.singhtwenty2.plugins.*
-import com.singhtwenty2.util.stockPriceUpdater
+import com.singhtwenty2.security.token.JwtTokenService
+import com.singhtwenty2.security.token.TokenConfig
+import com.singhtwenty2.configs.*
 import io.ktor.server.application.*
 
 fun main(args: Array<String>) {
@@ -30,4 +29,5 @@ fun Application.module() {
     //insertDummyStockPrices()
     //stockPriceUpdater()
     //autoInsertionToCompanyExchangeScript()
+//    handelSignup(userEmail = "callmeysg@gmail.com")
 }

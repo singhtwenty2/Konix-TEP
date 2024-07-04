@@ -1,7 +1,7 @@
 package com.singhtwenty2.util
 
-import com.singhtwenty2.data.entity.Companies
-import com.singhtwenty2.data.entity.StockPrices
+import com.singhtwenty2.data.repository.entity.Companies
+import com.singhtwenty2.data.repository.entity.StockPrices
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction

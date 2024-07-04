@@ -52,4 +52,6 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.8.21")
     // Coroutine support
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.0")
+    // Sendgrid email client
+    implementation("com.sendgrid:sendgrid-java:4.7.4")
 }
