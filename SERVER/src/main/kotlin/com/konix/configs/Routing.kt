@@ -1,10 +1,11 @@
-package com.singhtwenty2.configs
+package com.konix.configs
 
-import com.singhtwenty2.security.token.JwtTokenService
-import com.singhtwenty2.security.token.TokenConfig
-import com.singhtwenty2.controller.*
-import com.singhtwenty2.service.auth.EmailService
-import com.singhtwenty2.service.auth.OtpService
+import com.konix.controller.*
+import com.konix.security.token.JwtTokenService
+import com.konix.security.token.TokenConfig
+import com.konix.service.auth.EmailService
+import com.konix.service.auth.OtpService
+import com.konix.service.order.OrderService
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
 
@@ -26,7 +27,8 @@ fun Application.configureRouting(
         )
         login(
             tokenConfig,
-            tokenService)
+            tokenService
+        )
         getSecretInfo()
         kyc()
         dematAccount()
@@ -34,5 +36,8 @@ fun Application.configureRouting(
         company()
         companyExchange()
         stockPrice()
+        orderRoutes(
+            OrderService()
+        )
     }
 }

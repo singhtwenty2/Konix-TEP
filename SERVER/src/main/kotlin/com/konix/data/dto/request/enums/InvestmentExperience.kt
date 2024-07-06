@@ -1,4 +1,4 @@
-package com.singhtwenty2.data.dto.request.enums
+package com.konix.data.dto.request.enums
 
 import kotlinx.serialization.Serializable
 

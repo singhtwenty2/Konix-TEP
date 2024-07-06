@@ -1,4 +1,4 @@
-package com.singhtwenty2.service.auth
+package com.konix.service.auth
 
 import com.sendgrid.Method
 import com.sendgrid.Request

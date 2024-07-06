@@ -1,7 +1,7 @@
-package com.singhtwenty2.util
+package com.konix.util
 
-import com.singhtwenty2.data.repository.dao.CompanyExchangeDAO
-import com.singhtwenty2.data.dto.request.CompanyExchangeRequestDTO
+import com.konix.data.repository.dao.CompanyExchangeDAO
+import com.konix.data.dto.request.CompanyExchangeRequestDTO
 import io.ktor.server.application.*
 
 fun Application.autoInsertionToCompanyExchangeScript() {

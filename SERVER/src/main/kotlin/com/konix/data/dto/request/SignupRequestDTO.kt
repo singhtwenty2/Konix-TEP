@@ -1,6 +1,6 @@
-package com.singhtwenty2.data.dto.request
+package com.konix.data.dto.request
 
-import com.singhtwenty2.data.dto.request.enums.Gender
+import com.konix.data.dto.request.enums.Gender
 import kotlinx.serialization.Serializable
 
 @Serializable

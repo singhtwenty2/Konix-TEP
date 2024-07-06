@@ -1,4 +1,4 @@
-package com.singhtwenty2.security.token
+package com.konix.security.token
 
 interface TokenService {
     fun generate(

@@ -1,10 +1,10 @@
-package com.singhtwenty2.data.repository.dao
+package com.konix.data.repository.dao
 
-import com.singhtwenty2.data.dto.request.CompanyRequestDTO
-import com.singhtwenty2.data.dto.response.CompaniesMetadataResponseDTO
-import com.singhtwenty2.data.dto.response.CompanyResponseDTO
-import com.singhtwenty2.data.dto.response.PaginatedResponseDTO
-import com.singhtwenty2.data.repository.entity.Companies
+import com.konix.data.dto.request.CompanyRequestDTO
+import com.konix.data.dto.response.CompaniesMetadataResponseDTO
+import com.konix.data.dto.response.CompanyResponseDTO
+import com.konix.data.dto.response.PaginatedResponseDTO
+import com.konix.data.repository.entity.Companies
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll

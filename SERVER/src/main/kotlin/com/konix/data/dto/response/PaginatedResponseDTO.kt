@@ -1,4 +1,4 @@
-package com.singhtwenty2.data.dto.response
+package com.konix.data.dto.response
 
 import kotlinx.serialization.Serializable
 

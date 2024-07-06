@@ -1,8 +1,8 @@
-package com.singhtwenty2.controller
+package com.konix.controller
 
-import com.singhtwenty2.data.dto.request.KYCDTO
-import com.singhtwenty2.data.repository.dao.KYCDAO
-import com.singhtwenty2.util.RecordCreationErrorHandler
+import com.konix.data.dto.request.KYCDTO
+import com.konix.data.repository.dao.KYCDAO
+import com.konix.util.RecordCreationErrorHandler
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*

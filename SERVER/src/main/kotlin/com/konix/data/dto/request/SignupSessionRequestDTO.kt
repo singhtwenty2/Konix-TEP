@@ -1,12 +1,11 @@
-package com.singhtwenty2.data.dto.request
+package com.konix.data.dto.request
 
-import com.singhtwenty2.data.dto.request.enums.Gender
+import com.konix.data.dto.request.enums.Gender
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class CompleteSignupRequestDTO(
+data class SignupSessionRequestDTO(
     val email: String,
-    val otp: String,
     val name: String,
     val age: Int,
     val gender: Gender,

@@ -1,6 +1,6 @@
-package com.singhtwenty2.data.repository.entity
+package com.konix.data.repository.entity
 
-import com.singhtwenty2.data.dto.request.enums.Gender
+import com.konix.data.dto.request.enums.Gender
 import org.jetbrains.exposed.sql.Table
 
 object Users : Table() {

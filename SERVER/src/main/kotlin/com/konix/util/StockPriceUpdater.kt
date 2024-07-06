@@ -1,7 +1,7 @@
-package com.singhtwenty2.util
+package com.konix.util
 
-import com.singhtwenty2.data.repository.entity.Companies
-import com.singhtwenty2.data.repository.entity.StockPrices
+import com.konix.data.repository.entity.Companies
+import com.konix.data.repository.entity.StockPrices
 import kotlinx.coroutines.*
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll

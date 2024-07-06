@@ -1,12 +1,12 @@
-package com.singhtwenty2.data.repository.dao
+package com.konix.data.repository.dao
 
-import com.singhtwenty2.data.dto.request.KYCDTO
-import com.singhtwenty2.data.dto.request.enums.EmploymentStatus
-import com.singhtwenty2.data.dto.request.enums.InvestmentExperience
-import com.singhtwenty2.data.dto.request.enums.RiskTolerance
-import com.singhtwenty2.data.dto.response.KYCDetailsResponseDTO
-import com.singhtwenty2.data.repository.entity.KYC
-import com.singhtwenty2.util.RecordCreationErrorHandler
+import com.konix.data.dto.request.KYCDTO
+import com.konix.data.dto.request.enums.EmploymentStatus
+import com.konix.data.dto.request.enums.InvestmentExperience
+import com.konix.data.dto.request.enums.RiskTolerance
+import com.konix.data.dto.response.KYCDetailsResponseDTO
+import com.konix.data.repository.entity.KYC
+import com.konix.util.RecordCreationErrorHandler
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction

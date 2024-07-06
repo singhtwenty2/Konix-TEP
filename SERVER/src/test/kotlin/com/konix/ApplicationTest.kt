@@ -1,4 +1,4 @@
-package com.singhtwenty2
+package com.konix
 
 import io.ktor.client.request.*
 import io.ktor.client.statement.*

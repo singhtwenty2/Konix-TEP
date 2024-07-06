@@ -1,7 +1,7 @@
-package com.singhtwenty2.controller
+package com.konix.controller
 
-import com.singhtwenty2.data.repository.dao.ExchangeDAO
-import com.singhtwenty2.data.dto.request.ExchangeRequestDTO
+import com.konix.data.repository.dao.ExchangeDAO
+import com.konix.data.dto.request.ExchangeRequestDTO
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*

@@ -1,7 +1,7 @@
-package com.singhtwenty2.data.repository.entity
+package com.konix.data.repository.entity
 
-import com.singhtwenty2.data.dto.request.enums.AccountStatus
-import com.singhtwenty2.data.dto.request.enums.NomineeRelation
+import com.konix.data.dto.request.enums.AccountStatus
+import com.konix.data.dto.request.enums.NomineeRelation
 import org.jetbrains.exposed.sql.Table
 
 object DematAccounts : Table() {

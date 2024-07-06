@@ -1,8 +1,8 @@
-package com.singhtwenty2.data.repository.dao
+package com.konix.data.repository.dao
 
-import com.singhtwenty2.data.dto.request.ExchangeRequestDTO
-import com.singhtwenty2.data.dto.response.ExchangeResponseDTO
-import com.singhtwenty2.data.repository.entity.Exchanges
+import com.konix.data.dto.request.ExchangeRequestDTO
+import com.konix.data.dto.response.ExchangeResponseDTO
+import com.konix.data.repository.entity.Exchanges
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction

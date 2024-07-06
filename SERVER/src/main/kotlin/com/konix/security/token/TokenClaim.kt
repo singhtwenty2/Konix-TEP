@@ -1,4 +1,4 @@
-package com.singhtwenty2.security.token
+package com.konix.security.token
 
 data class TokenClaim(
     val name: String,

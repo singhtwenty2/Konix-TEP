@@ -1,4 +1,4 @@
-package com.singhtwenty2.configs
+package com.konix.configs
 
 import io.ktor.http.*
 import io.ktor.server.application.*

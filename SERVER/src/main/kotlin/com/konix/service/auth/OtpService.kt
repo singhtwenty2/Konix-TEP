@@ -1,6 +1,6 @@
-package com.singhtwenty2.service.auth
+package com.konix.service.auth
 
-import com.singhtwenty2.data.repository.dao.OtpDAO
+import com.konix.data.repository.dao.OtpDAO
 import java.security.MessageDigest
 import java.security.SecureRandom
 import java.text.SimpleDateFormat

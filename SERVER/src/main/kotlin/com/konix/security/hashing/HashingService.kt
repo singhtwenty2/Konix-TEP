@@ -1,4 +1,4 @@
-package com.singhtwenty2.security.hashing
+package com.konix.security.hashing
 
 interface HashingService {
     fun generateSaltedHash(

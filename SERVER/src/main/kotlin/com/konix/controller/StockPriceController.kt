@@ -1,7 +1,7 @@
-package com.singhtwenty2.controller
+package com.konix.controller
 
-import com.singhtwenty2.data.repository.entity.StockPrices
-import com.singhtwenty2.data.dto.response.StockPriceResponseDTO
+import com.konix.data.repository.entity.StockPrices
+import com.konix.data.dto.response.StockPriceResponseDTO
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*

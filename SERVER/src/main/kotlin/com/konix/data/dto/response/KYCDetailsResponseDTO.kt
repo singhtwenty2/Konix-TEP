@@ -1,8 +1,8 @@
-package com.singhtwenty2.data.dto.response
+package com.konix.data.dto.response
 
-import com.singhtwenty2.data.dto.request.enums.EmploymentStatus
-import com.singhtwenty2.data.dto.request.enums.InvestmentExperience
-import com.singhtwenty2.data.dto.request.enums.RiskTolerance
+import com.konix.data.dto.request.enums.EmploymentStatus
+import com.konix.data.dto.request.enums.InvestmentExperience
+import com.konix.data.dto.request.enums.RiskTolerance
 import kotlinx.serialization.Serializable
 
 @Serializable

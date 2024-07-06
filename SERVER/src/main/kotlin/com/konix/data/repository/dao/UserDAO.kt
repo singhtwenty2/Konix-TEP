@@ -1,13 +1,13 @@
-package com.singhtwenty2.data.repository.dao
+package com.konix.data.repository.dao
 
-import com.singhtwenty2.data.dto.request.CompleteSignupRequestDTO
-import com.singhtwenty2.data.dto.request.LoginRequestDTO
-import com.singhtwenty2.data.dto.request.SignupRequestDTO
-import com.singhtwenty2.data.dto.request.enums.Gender
-import com.singhtwenty2.data.repository.entity.Users
-import com.singhtwenty2.security.hashing.SHA256HashingService
-import com.singhtwenty2.security.hashing.SaltedHash
-import com.singhtwenty2.util.RecordCreationErrorHandler
+import com.konix.data.dto.request.LoginRequestDTO
+import com.konix.data.dto.request.SignupRequestDTO
+import com.konix.data.dto.request.SignupSessionRequestDTO
+import com.konix.data.dto.request.enums.Gender
+import com.konix.data.repository.entity.Users
+import com.konix.security.hashing.SHA256HashingService
+import com.konix.security.hashing.SaltedHash
+import com.konix.util.RecordCreationErrorHandler
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -16,23 +16,23 @@ object UserDAO {
 
     private val hashingService = SHA256HashingService()
 
-    fun createUser(completeSignupRequestDTO: CompleteSignupRequestDTO): RecordCreationErrorHandler {
+    fun createUser(signupSessionRequestDTO: SignupSessionRequestDTO): RecordCreationErrorHandler {
 
         val saltedHash = hashingService.generateSaltedHash(
-            value = completeSignupRequestDTO.password
+            value = signupSessionRequestDTO.password
         )
 
         return transaction {
-            val existingRecord = Users.select { Users.email eq completeSignupRequestDTO.email }.singleOrNull()
+            val existingRecord = Users.select { Users.email eq signupSessionRequestDTO.email }.singleOrNull()
             if (existingRecord != null) {
                 return@transaction RecordCreationErrorHandler
                     .AlreadyExists("Account Already Exits With The Given Email...")
             } else {
                 Users.insert {
-                    it[name] = completeSignupRequestDTO.name
-                    it[email] = completeSignupRequestDTO.email
-                    it[age] = completeSignupRequestDTO.age
-                    it[gender] = completeSignupRequestDTO.gender.name
+                    it[name] = signupSessionRequestDTO.name
+                    it[email] = signupSessionRequestDTO.email
+                    it[age] = signupSessionRequestDTO.age
+                    it[gender] = signupSessionRequestDTO.gender.name
                     it[password] = saltedHash.hash
                     it[salt] = saltedHash.salt
                 }

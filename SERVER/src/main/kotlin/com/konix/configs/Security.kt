@@ -1,8 +1,8 @@
-package com.singhtwenty2.configs
+package com.konix.configs
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
-import com.singhtwenty2.security.token.TokenConfig
+import com.konix.security.token.TokenConfig
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*

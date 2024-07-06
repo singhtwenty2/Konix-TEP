@@ -1,4 +1,4 @@
-package com.singhtwenty2.util
+package com.konix.util
 
 sealed class RecordCreationErrorHandler {
     data class Success(val successMessage: String) : RecordCreationErrorHandler()

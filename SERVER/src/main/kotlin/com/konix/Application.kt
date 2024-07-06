@@ -1,9 +1,11 @@
-package com.singhtwenty2
+package com.konix
 
-import com.singhtwenty2.security.token.JwtTokenService
-import com.singhtwenty2.security.token.TokenConfig
-import com.singhtwenty2.configs.*
+import com.konix.security.token.JwtTokenService
+import com.konix.security.token.TokenConfig
+import com.konix.configs.*
+import com.konix.data.dto.request.SignupSessionRequestDTO
 import io.ktor.server.application.*
+import io.ktor.server.sessions.*
 
 fun main(args: Array<String>) {
     io.ktor.server.netty.EngineMain.main(args)
@@ -24,6 +26,7 @@ fun Application.module() {
     configureDatabases()
     configureMonitoring()
     configureHTTP()
+    configureSession()
     configureSecurity(tokenConfig)
     configureRouting(tokenConfig, tokenService)
     //insertDummyStockPrices()

@@ -1,9 +1,9 @@
-package com.singhtwenty2.data.repository.dao
+package com.konix.data.repository.dao
 
-import com.singhtwenty2.data.dto.request.DematAccountRequestDTO
-import com.singhtwenty2.data.dto.response.DematAccountResponseDTO
-import com.singhtwenty2.data.repository.entity.DematAccounts
-import com.singhtwenty2.util.RecordCreationErrorHandler
+import com.konix.data.dto.request.DematAccountRequestDTO
+import com.konix.data.dto.response.DematAccountResponseDTO
+import com.konix.data.repository.entity.DematAccounts
+import com.konix.util.RecordCreationErrorHandler
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction

@@ -1,4 +1,4 @@
-package com.singhtwenty2.data.repository.entity
+package com.konix.data.repository.entity
 
 import org.jetbrains.exposed.sql.Table
 

@@ -1,4 +1,4 @@
-package com.singhtwenty2.security.token
+package com.konix.security.token
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm

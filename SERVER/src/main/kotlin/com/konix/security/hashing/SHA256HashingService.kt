@@ -1,4 +1,4 @@
-package com.singhtwenty2.security.hashing
+package com.konix.security.hashing
 
 import org.apache.commons.codec.binary.Hex
 import org.apache.commons.codec.digest.DigestUtils

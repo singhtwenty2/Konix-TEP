@@ -1,4 +1,4 @@
-package com.singhtwenty2.configs
+package com.konix.configs
 
 import io.ktor.server.application.*
 import org.jetbrains.exposed.sql.Database
