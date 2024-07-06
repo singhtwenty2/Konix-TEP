@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Konix</string>
+    <string name="signup_screen_subtitle">Signup To Continue</string>
+    <string name="signup_button">Create Account</string>
+</resources>
