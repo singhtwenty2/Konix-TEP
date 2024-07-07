@@ -19,7 +19,7 @@ fun Application.configureRouting(
     val otpService = OtpService(emailService)
 
     routing {
-
+        health()
         welcome()
         signup(
             emailService,

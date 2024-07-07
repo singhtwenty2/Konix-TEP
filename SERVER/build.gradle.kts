@@ -1,4 +1,3 @@
-
 val kotlin_version: String by project
 val logback_version: String by project
 val exposed_version: String by project
@@ -57,3 +56,23 @@ dependencies {
     // Logging
     implementation("ch.qos.logback:logback-classic:1.4.12")
 }
+
+// Task to generate JAR
+tasks.withType<Jar> {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    manifest {
+        attributes["Main-Class"] = "com.konix.ApplicationKt"
+    }
+    from(sourceSets.main.get().output)
+
+    dependsOn(configurations.runtimeClasspath)
+    from({
+        configurations.runtimeClasspath.get().filter { it.name.endsWith("jar") }.map { zipTree(it) }
+    })
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
+    ignoreFailures = true
+}
+

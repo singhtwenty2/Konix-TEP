@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory
 private val logger = LoggerFactory.getLogger("Controller")
 
 fun Route.welcome() {
-    get("api/v1/") {
+    get("/api/v1/") {
         call.respond("Hello There !")
     }
 }
