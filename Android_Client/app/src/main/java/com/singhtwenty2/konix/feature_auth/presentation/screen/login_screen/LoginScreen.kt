@@ -1,4 +1,4 @@
-package com.singhtwenty2.konix.feature_auth.presentation.screen.signup_screen
+package com.singhtwenty2.konix.feature_auth.presentation.screen.login_screen
 
 import android.content.Context
 import android.os.Vibrator
@@ -17,12 +17,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Cake
 import androidx.compose.material.icons.rounded.Lock
-import androidx.compose.material.icons.rounded.Man
 import androidx.compose.material.icons.rounded.MarkEmailRead
-import androidx.compose.material.icons.rounded.Person2
-import androidx.compose.material.icons.twotone.Lock
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -41,31 +37,33 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.singhtwenty2.konix.R
 import com.singhtwenty2.konix.feature_auth.presentation.screen.component.AuthInputFieldComposable
-import com.singhtwenty2.konix.feature_auth.presentation.screen.component.GenderDropdownComposable
 import com.singhtwenty2.konix.feature_auth.presentation.screen.component.TopSegmentComposable
 import com.singhtwenty2.konix.feature_auth.util.AuthResponseHandler
 
 @Composable
-fun SignupScreenComposable(
+fun LoginScreenComposable(
     modifier: Modifier = Modifier,
-    viewModel: SignupScreenViewModel = hiltViewModel(),
+    viewModel: LoginScreenViewModel = hiltViewModel(),
     navController: NavController
 ) {
-
     val state = viewModel.state
     val context = LocalContext.current
     val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
     LaunchedEffect(viewModel, context) {
-        viewModel.signupResult.collect { result ->
+        viewModel.loginResult.collect { result ->
             when (result) {
                 is AuthResponseHandler.Success -> {
                     Toast.makeText(
                         context,
-                        "Signup successful. Please verify your email to login",
+                        "Login successful",
                         Toast.LENGTH_SHORT
                     ).show()
-                    navController.navigate("verify_otp_screen")
+                    navController.navigate("home_feature") {
+                        popUpTo("auth_feature") {
+                            inclusive = true
+                        }
+                    }
                 }
 
                 is AuthResponseHandler.BadRequest -> {
@@ -102,6 +100,7 @@ fun SignupScreenComposable(
             }
         }
     }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -113,20 +112,10 @@ fun SignupScreenComposable(
     ) {
         TopSegmentComposable(
             subHeadLine = stringResource(
-                id =R.string.signup_screen_subtitle
-            ))
+                id = R.string.login_screen_subtitle
+            )
+        )
         Spacer(modifier = Modifier.padding(16.dp))
-        AuthInputFieldComposable(
-            label = "Name",
-            icon = Icons.Rounded.Person2,
-            keyboardType = KeyboardType.Text,
-            keyboardCapitalization = KeyboardCapitalization.Words,
-            autocorrect = false,
-            initialValue = state.value.name
-        ) {
-            viewModel.onEvent(SignupUiEvent.NameChanged(it))
-        }
-        Spacer(modifier = Modifier.height(16.dp))
         AuthInputFieldComposable(
             label = "Email",
             icon = Icons.Rounded.MarkEmailRead,
@@ -135,26 +124,7 @@ fun SignupScreenComposable(
             autocorrect = false,
             initialValue = state.value.email
         ) {
-            viewModel.onEvent(SignupUiEvent.EmailChanged(it))
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        AuthInputFieldComposable(
-            label = "Age",
-            icon = Icons.Rounded.Cake,
-            keyboardType = KeyboardType.Number,
-            keyboardCapitalization = KeyboardCapitalization.None,
-            autocorrect = false,
-            initialValue = state.value.age
-        ) {
-            viewModel.onEvent(SignupUiEvent.AgeChanged(it))
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        GenderDropdownComposable(
-            label = "Gender",
-            icon = Icons.Rounded.Man,
-            selectedGender = state.value.gender
-        ) {
-            viewModel.onEvent(SignupUiEvent.GenderChanged(it))
+            viewModel.onEvent(LoginUiEvent.EmailChanged(it))
         }
         Spacer(modifier = Modifier.height(16.dp))
         AuthInputFieldComposable(
@@ -165,18 +135,7 @@ fun SignupScreenComposable(
             autocorrect = false,
             initialValue = state.value.password
         ) {
-            viewModel.onEvent(SignupUiEvent.PasswordChanged(it))
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        AuthInputFieldComposable(
-            label = "Confirm Password",
-            icon = Icons.TwoTone.Lock,
-            keyboardType = KeyboardType.Password,
-            keyboardCapitalization = KeyboardCapitalization.None,
-            autocorrect = false,
-            initialValue = state.value.confirmPassword
-        ) {
-            viewModel.onEvent(SignupUiEvent.ConfirmPasswordChanged(it))
+            viewModel.onEvent(LoginUiEvent.PasswordChanged(it))
         }
         Spacer(modifier = Modifier.height(16.dp))
         Button(
@@ -192,21 +151,21 @@ fun SignupScreenComposable(
                 disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
             ),
             onClick = {
-                if (state.value.name.isEmpty() || state.value.email.isEmpty() || state.value.age.isEmpty() || state.value.password.isEmpty() || state.value.confirmPassword.isEmpty()) {
+                if (state.value.email.isEmpty() || state.value.password.isEmpty()) {
+                    vibrator.vibrate(40)
                     Toast.makeText(
                         context,
                         "Please fill all the fields",
                         Toast.LENGTH_SHORT
                     ).show()
-                    vibrator.vibrate(40)
                 } else {
+                    viewModel.onEvent(LoginUiEvent.LoginClicked)
                     vibrator.vibrate(30)
-                    viewModel.onEvent(SignupUiEvent.SignupClicked)
                 }
             }
         ) {
             Text(
-                text = stringResource(id = R.string.signup_button),
+                text = stringResource(id = R.string.login_button),
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.onPrimary
             )
@@ -218,23 +177,23 @@ fun SignupScreenComposable(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Already have an account? ",
+                text = "Don't have an account? ",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )
             Text(
-                text = "Login",
+                text = "Sign Up",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
                     .padding(start = 4.dp)
                     .clickable {
-                        navController.navigate("login_screen")
+                        navController.navigate("signup_screen")
                     }
             )
         }
     }
-    if(state.value.isLoading) {
+    if (state.value.isLoading) {
         Box(
             modifier = Modifier
                 .fillMaxSize()

@@ -1,4 +1,4 @@
-package com.singhtwenty2.konix.feature_auth.presentation.screen.signup_screen.component
+package com.singhtwenty2.konix.feature_auth.presentation.screen.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,7 +17,8 @@ import com.singhtwenty2.konix.R
 
 @Composable
 fun TopSegmentComposable(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    subHeadLine: String
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -32,7 +33,7 @@ fun TopSegmentComposable(
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = stringResource(id = R.string.signup_screen_subtitle),
+            text = subHeadLine,
             style = MaterialTheme.typography.headlineMedium,
             color = MaterialTheme.colorScheme.onSurface,
         )

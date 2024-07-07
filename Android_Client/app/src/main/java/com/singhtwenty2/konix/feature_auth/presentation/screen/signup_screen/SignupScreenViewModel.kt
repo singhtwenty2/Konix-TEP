@@ -20,7 +20,7 @@ class SignupScreenViewModel @Inject constructor(
     var state = mutableStateOf(SignupState())
 
     private val resultChannel = Channel<AuthResponseHandler<Unit>>()
-    val authResult = resultChannel.receiveAsFlow()
+    val signupResult = resultChannel.receiveAsFlow()
 
     fun onEvent(event: SignupUiEvent) {
         when (event) {

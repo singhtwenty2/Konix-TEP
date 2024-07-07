@@ -1,6 +1,7 @@
 package com.singhtwenty2.konix.feature_auth.data.repository
 
 import android.content.SharedPreferences
+import android.util.Log
 import com.singhtwenty2.konix.feature_auth.data.mapper.toLoginRequestDTO
 import com.singhtwenty2.konix.feature_auth.data.mapper.toSignupRequestDTO
 import com.singhtwenty2.konix.feature_auth.data.mapper.toVerifyOtpRequestDTO
@@ -31,6 +32,7 @@ class AuthRepositoryImpl(
             pref.edit()
                 .putString("jwt", response.token)
                 .apply()
+            Log.d("JWT", "login: ${response.token}")
         }
     }
 

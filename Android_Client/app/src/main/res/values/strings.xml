@@ -2,4 +2,8 @@
     <string name="app_name">Konix</string>
     <string name="signup_screen_subtitle">Signup To Continue</string>
     <string name="signup_button">Create Account</string>
+    <string name="login_screen_subtitle">Login To Continue</string>
+    <string name="login_button">Take Me In</string>
+    <string name="verify_otp_subtitle">Check Your Email For OTP</string>
+    <string name="verify_otp_button">Verify</string>
 </resources>

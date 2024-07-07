@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.singhtwenty2.konix.feature_auth.presentation.screen.signup_screen.component
+package com.singhtwenty2.konix.feature_auth.presentation.screen.component
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.DropdownMenuItem
