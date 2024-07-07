@@ -61,7 +61,7 @@ dependencies {
 tasks.withType<Jar> {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     manifest {
-        attributes["Main-Class"] = "com.konix.ApplicationKt"
+        attributes["Main-Class"] = application.mainClass.get()
     }
     from(sourceSets.main.get().output)
 
