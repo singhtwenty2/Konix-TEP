@@ -26,7 +26,7 @@ fun stockPriceUpdater() {
                     }
                 }
             }
-            delay(60000)
+            delay(900)
         }
     }
 }

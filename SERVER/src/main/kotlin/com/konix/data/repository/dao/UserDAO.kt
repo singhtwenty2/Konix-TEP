@@ -4,6 +4,7 @@ import com.konix.data.dto.request.LoginRequestDTO
 import com.konix.data.dto.request.SignupRequestDTO
 import com.konix.data.dto.request.SignupSessionRequestDTO
 import com.konix.data.dto.request.enums.Gender
+import com.konix.data.dto.response.UserDetailResponseDTO
 import com.konix.data.repository.entity.Users
 import com.konix.security.hashing.SHA256HashingService
 import com.konix.security.hashing.SaltedHash
@@ -76,6 +77,20 @@ object UserDAO {
         return transaction {
             val userRow = Users.select { Users.email eq email }.singleOrNull()
             userRow != null
+        }
+    }
+
+    fun getUserDetails(userId: Int): UserDetailResponseDTO? {
+        return transaction {
+            val userRow = Users.select { Users.userId eq userId }.singleOrNull()
+            userRow?.let {
+                UserDetailResponseDTO(
+                    name = it[Users.name],
+                    email = it[Users.email],
+                    age = it[Users.age].toString(),
+                    gender = it[Users.gender].toString()
+                )
+            }
         }
     }
 }

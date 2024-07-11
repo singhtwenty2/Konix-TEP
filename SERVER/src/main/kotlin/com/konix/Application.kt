@@ -4,6 +4,7 @@ import com.konix.security.token.JwtTokenService
 import com.konix.security.token.TokenConfig
 import com.konix.configs.*
 import com.konix.data.dto.request.SignupSessionRequestDTO
+import com.konix.util.stockPriceUpdater
 import io.ktor.server.application.*
 import io.ktor.server.sessions.*
 
@@ -32,5 +33,4 @@ fun Application.module() {
     //insertDummyStockPrices()
     //stockPriceUpdater()
     //autoInsertionToCompanyExchangeScript()
-//    handelSignup(userEmail = "callmeysg@gmail.com")
 }

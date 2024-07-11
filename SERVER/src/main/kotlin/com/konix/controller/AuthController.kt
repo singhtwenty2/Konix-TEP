@@ -114,11 +114,21 @@ fun Route.login(
 
 fun Route.getSecretInfo() {
     authenticate {
-        get("/api/v1/secret") {
+        get("/api/v1/auth/secret") {
             val principal = call.principal<JWTPrincipal>()
             val userId = principal?.getClaim("userId", String::class)
             logger.info("Accessed secret info for userId: $userId")
             call.respond(HttpStatusCode.OK, "Your User Id Is $userId")
+        }
+        get("/api/v1/auth/about") {
+            val principal = call.principal<JWTPrincipal>()
+            val userId = principal?.getClaim("userId", String::class)?.toInt()
+            userId?.let {
+                val userDetails = UserDAO.getUserDetails(userId)
+                userDetails?.let {
+                    call.respond(HttpStatusCode.OK, userDetails)
+                } ?: call.respond(HttpStatusCode.NotFound)
+            } ?: call.respond(HttpStatusCode.Unauthorized)
         }
     }
 }
