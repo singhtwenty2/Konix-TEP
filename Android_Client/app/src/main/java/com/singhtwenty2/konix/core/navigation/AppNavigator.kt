@@ -7,12 +7,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
+import androidx.navigation.navArgument
 import com.singhtwenty2.konix.feature_auth.presentation.screen.login_screen.LoginScreenComposable
 import com.singhtwenty2.konix.feature_auth.presentation.screen.signup_screen.SignupScreenComposable
 import com.singhtwenty2.konix.feature_auth.presentation.screen.verify_otp_screen.VerifyOtpScreenComposable
+import com.singhtwenty2.konix.feature_home.presentation.screen.exchange_screen.ExchangeDetailScreenComposable
+import com.singhtwenty2.konix.feature_home.presentation.screen.home_screen.HomeScreenComposable
+import com.singhtwenty2.konix.feature_home.presentation.screen.stock_chart_screen.StockChartScreenComposable
 
 @Composable
 fun AppNavigatorComposable(
@@ -30,10 +35,10 @@ fun AppNavigatorComposable(
                 LoginScreenComposable(navController = navHostController)
             }
             composable("signup_screen") {
-                 SignupScreenComposable(navController = navHostController)
+                SignupScreenComposable(navController = navHostController)
             }
             composable("verify_otp_screen") {
-                 VerifyOtpScreenComposable(navController = navHostController)
+                VerifyOtpScreenComposable(navController = navHostController)
             }
         }
         navigation(
@@ -41,11 +46,60 @@ fun AppNavigatorComposable(
             route = "home_feature",
         ) {
             composable("home_screen") {
+                HomeScreenComposable(navController = navHostController)
+            }
+            composable("company_detail_screen") {
                 Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Text(text = "Home Screen")
+                    Text(text = "Company Detail Screen")
+                }
+            }
+            composable(
+                route = "exchange_detail_screen/{id}",
+                arguments = listOf(
+                    navArgument("id") {
+                        type = NavType.IntType
+                    }
+                )
+            ) { entry ->
+                entry.arguments?.getInt("id")?.let { id ->
+                    ExchangeDetailScreenComposable(
+                        navController = navHostController,
+                        id = id
+                    )
+                }
+            }
+            composable(
+                route = "stock_chart_screen/{companyId}",
+                arguments = listOf(
+                    navArgument("companyId") {
+                        type = NavType.IntType
+                    }
+                )
+            ) { entry ->
+                entry.arguments?.getInt("companyId")?.let { companyId ->
+                    StockChartScreenComposable(
+                        navController = navHostController,
+                        companyId = companyId
+                    )
+                }
+            }
+            composable("profile_screen") {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(text = "Profile Screen")
+                }
+            }
+            composable("portfolio_screen") {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(text = "Portfolio Screen")
                 }
             }
         }

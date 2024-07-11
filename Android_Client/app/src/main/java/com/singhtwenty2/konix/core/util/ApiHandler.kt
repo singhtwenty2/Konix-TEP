@@ -1,5 +1,6 @@
-package com.singhtwenty2.konix.feature_auth.util
+package com.singhtwenty2.konix.core.util
 
+import com.singhtwenty2.konix.feature_auth.util.AuthResponseHandler
 import retrofit2.HttpException
 import java.io.IOException
 

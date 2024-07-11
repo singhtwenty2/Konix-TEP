@@ -5,6 +5,7 @@ import android.os.Vibrator
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,8 +37,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.singhtwenty2.konix.R
-import com.singhtwenty2.konix.feature_auth.presentation.screen.component.AuthInputFieldComposable
-import com.singhtwenty2.konix.feature_auth.presentation.screen.component.TopSegmentComposable
+import com.singhtwenty2.konix.core.ui.theme.ZERODHA_DARK
+import com.singhtwenty2.konix.feature_auth.presentation.component.AuthInputFieldComposable
+import com.singhtwenty2.konix.feature_auth.presentation.component.TopSegmentComposable
 import com.singhtwenty2.konix.feature_auth.util.AuthResponseHandler
 
 @Composable
@@ -49,6 +51,7 @@ fun LoginScreenComposable(
     val state = viewModel.state
     val context = LocalContext.current
     val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+    val uiColor = if (isSystemInDarkTheme()) ZERODHA_DARK else MaterialTheme.colorScheme.background
 
     LaunchedEffect(viewModel, context) {
         viewModel.loginResult.collect { result ->
@@ -106,9 +109,9 @@ fun LoginScreenComposable(
         verticalArrangement = Arrangement.Center,
         modifier = modifier
             .fillMaxSize()
+            .background(uiColor)
             .padding(16.dp)
             .verticalScroll(rememberScrollState())
-            .background(MaterialTheme.colorScheme.background),
     ) {
         TopSegmentComposable(
             subHeadLine = stringResource(

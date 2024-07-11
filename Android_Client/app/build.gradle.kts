@@ -96,4 +96,6 @@ dependencies {
     implementation(libs.androidx.ui.text.google.fonts)
     // M3 Extended Icons
     implementation(libs.androidx.material.icons.extended)
+    // Graph
+    implementation (libs.mpandroidchart)
 }

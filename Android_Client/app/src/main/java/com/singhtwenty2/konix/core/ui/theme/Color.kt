@@ -34,3 +34,9 @@ val Green40 = Color(0xFF4DA17C)
 val Green30 = Color(0xFF2A8A3B)
 val Green20 = Color(0xFF0A7623)
 val Green10 = Color(0xFF005414)
+
+// Additional shades
+val BG_V1 = Color(0xFF0C0818)
+val BLUE_V1 = Color(0xFF00DFE1)
+val RED = Color(0xFFE70F0F)
+val ZERODHA_DARK = Color(0xFF15202B)

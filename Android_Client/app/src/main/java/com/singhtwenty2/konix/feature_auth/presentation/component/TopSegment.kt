@@ -1,4 +1,4 @@
-package com.singhtwenty2.konix.feature_auth.presentation.screen.component
+package com.singhtwenty2.konix.feature_auth.presentation.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

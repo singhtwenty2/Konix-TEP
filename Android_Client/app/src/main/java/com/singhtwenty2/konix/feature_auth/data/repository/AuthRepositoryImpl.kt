@@ -11,7 +11,7 @@ import com.singhtwenty2.konix.feature_auth.domain.model.SignupRequest
 import com.singhtwenty2.konix.feature_auth.domain.model.VerifyOtpRequest
 import com.singhtwenty2.konix.feature_auth.domain.repository.AuthRepository
 import com.singhtwenty2.konix.feature_auth.util.AuthResponseHandler
-import com.singhtwenty2.konix.feature_auth.util.handleApiCall
+import com.singhtwenty2.konix.core.util.handleApiCall
 
 class AuthRepositoryImpl(
     private val service: AuthRemoteService,
