@@ -6,6 +6,7 @@ import com.konix.data.dto.response.CompanyResponseDTO
 import com.konix.data.dto.response.PaginatedResponseDTO
 import com.konix.data.repository.entity.Companies
 import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -79,5 +80,22 @@ object CompanyDAO {
             currentPage = page,
             items = companies
         )
+    }
+
+    fun searchCompanies(query: String): List<CompaniesMetadataResponseDTO> {
+        return transaction {
+            Companies.select {
+                (Companies.name like "%$query%") or
+                        (Companies.symbol like "%$query%") or
+                        (Companies.sector like "%$query%")
+            }.map {
+                CompaniesMetadataResponseDTO(
+                    id = it[Companies.companyId],
+                    name = it[Companies.name],
+                    symbol = it[Companies.symbol],
+                    marketCap = it[Companies.marketCap].toDouble()
+                )
+            }
+        }
     }
 }

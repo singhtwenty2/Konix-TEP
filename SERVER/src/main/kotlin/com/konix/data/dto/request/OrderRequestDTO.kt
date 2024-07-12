@@ -6,10 +6,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class OrderRequestDTO(
-    val userId: Int,
     val companyId: Int,
     val orderType: OrderType,
-    val orderStatus: OrderStatus,
     val price: Double,
     var quantity: Int
 )

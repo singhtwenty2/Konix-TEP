@@ -39,5 +39,10 @@ fun Route.company() {
                 call.respond(HttpStatusCode.OK, response)
             }
         }
+        get("/api/v1/companies/search") {
+            val query = call.request.queryParameters["searchQuery"] ?: return@get call.respond(HttpStatusCode.BadRequest, "Query parameter is missing")
+            val response = CompanyDAO.searchCompanies(query)
+            call.respond(HttpStatusCode.OK, response)
+        }
     }
 }

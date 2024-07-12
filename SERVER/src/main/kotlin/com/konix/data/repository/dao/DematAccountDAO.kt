@@ -7,6 +7,8 @@ import com.konix.util.RecordCreationErrorHandler
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.update
+import java.math.BigDecimal
 import java.time.LocalDate
 
 object DematAccountDAO {
@@ -65,6 +67,12 @@ object DematAccountDAO {
     fun isDematAccountExistsForUser(userId: Int): Boolean {
         return transaction {
             DematAccounts.select { DematAccounts.userId eq userId }.singleOrNull() != null
+        }
+    }
+
+    fun updateBalance(userId: Int, newBalance: BigDecimal) = transaction {
+        DematAccounts.update({ DematAccounts.userId eq userId }) {
+            it[balance] = newBalance
         }
     }
 }
