@@ -1,5 +1,7 @@
 package com.singhtwenty2.konix.core.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
@@ -20,14 +22,17 @@ import com.singhtwenty2.konix.feature_auth.presentation.screen.verify_otp_screen
 import com.singhtwenty2.konix.feature_home.presentation.screen.exchange_screen.ExchangeDetailScreenComposable
 import com.singhtwenty2.konix.feature_home.presentation.screen.home_screen.HomeScreenComposable
 import com.singhtwenty2.konix.feature_home.presentation.screen.stock_chart_screen.StockChartScreenComposable
+import com.singhtwenty2.konix.feature_profile.presentation.profile_screen.ProfileScreenComposable
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AppNavigatorComposable(
     navHostController: NavHostController,
+    startDestination: String
 ) {
     NavHost(
         navController = navHostController,
-        startDestination = "auth_feature",
+        startDestination = startDestination,
     ) {
         navigation(
             startDestination = "login_screen",
@@ -95,12 +100,7 @@ fun AppNavigatorComposable(
                 }
             }
             composable("profile_screen") {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(text = "Profile Screen")
-                }
+                ProfileScreenComposable(navController = navHostController)
             }
             composable("portfolio_screen") {
                 Box(

@@ -1,4 +1,4 @@
-package com.singhtwenty2.konix.feature_auth.data.remote.dto.response
+package com.singhtwenty2.konix.feature_profile.data.remote.dto
 
 data class KYCDetailsResponseDTO(
     val phoneNumber: String,

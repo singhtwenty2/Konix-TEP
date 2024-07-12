@@ -58,7 +58,7 @@ class HomeScreenViewModel @Inject constructor(
     private fun getCompanies() {
         viewModelScope.launch {
             state.value = state.value.copy(isLoading = true)
-            val result = companyRepository.getPaginatedCompanies(1, 15)
+            val result = companyRepository.getPaginatedCompanies(1, 35)
             companyListingResultChannel.send(result)
             state.value = state.value.copy(isLoading = false)
         }

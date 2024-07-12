@@ -1,6 +1,6 @@
-package com.singhtwenty2.konix.feature_auth.data.remote.dto.response
+package com.singhtwenty2.konix.feature_profile.domain.model
 
-data class DematAccountResponseDTO(
+data class DematAccountResponse(
     val dematAccountId: Int,
     val accountNumber: String,
     val accountHolderName: String,

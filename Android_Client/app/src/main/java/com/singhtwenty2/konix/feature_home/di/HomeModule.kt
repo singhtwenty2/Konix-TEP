@@ -1,7 +1,5 @@
 package com.singhtwenty2.konix.feature_home.di
 
-import android.app.Application
-import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import com.singhtwenty2.konix.feature_home.data.remote.CompanyRemoteService
 import com.singhtwenty2.konix.feature_home.data.repository.CompanyRepositoryImpl

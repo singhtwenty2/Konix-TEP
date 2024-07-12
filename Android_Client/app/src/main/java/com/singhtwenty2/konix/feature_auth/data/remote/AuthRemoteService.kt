@@ -5,8 +5,6 @@ import com.singhtwenty2.konix.feature_auth.data.remote.dto.request.KycRequestDTO
 import com.singhtwenty2.konix.feature_auth.data.remote.dto.request.LoginRequestDTO
 import com.singhtwenty2.konix.feature_auth.data.remote.dto.request.SignupRequestDTO
 import com.singhtwenty2.konix.feature_auth.data.remote.dto.request.VerifyOtpRequestDTO
-import com.singhtwenty2.konix.feature_auth.data.remote.dto.response.DematAccountResponseDTO
-import com.singhtwenty2.konix.feature_auth.data.remote.dto.response.KYCDetailsResponseDTO
 import com.singhtwenty2.konix.feature_auth.data.remote.dto.response.LoginResponseDTO
 import com.singhtwenty2.konix.feature_auth.data.remote.dto.response.UserDetailsResponseDTO
 import com.singhtwenty2.konix.feature_auth.data.remote.dto.response.UserStatusResponseDTO
@@ -43,21 +41,11 @@ interface AuthRemoteService {
         @Header("Authorization") token: String
     ): Response<UserDetailsResponseDTO>
 
-    @GET("/api/v1/auth/logout")
-    suspend fun logout(
-        @Header("Authorization") token: String
-    ): Response<Unit>
-
     @POST("/api/v1/kyc")
     suspend fun performKyc(
         @Header("Authorization") token: String,
         @Body request: KycRequestDTO
     ): Response<Unit>
-
-    @GET("/api/v1/kyc")
-    suspend fun getKycDetails(
-        @Header("Authorization") token: String
-    ): Response<KYCDetailsResponseDTO>
 
     @POST("/api/v1/demat")
     suspend fun performDematAccountCreation(
@@ -65,8 +53,4 @@ interface AuthRemoteService {
         @Body request: DematAccountCreationRequestDTO
     ): Response<Unit>
 
-    @GET("/api/v1/demat")
-    suspend fun getDematAccountDetails(
-        @Header("Authorization") token: String
-    ): Response<DematAccountResponseDTO>
 }
