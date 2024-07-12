@@ -25,10 +25,10 @@ fun GenderDropdownComposable(
     label: String,
     icon: ImageVector,
     selectedGender: String,
+    genders: List<String>,
     onGenderSelected: (String) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
-    val genders = listOf("MALE", "FEMALE", "LGBTQ_GROUP")
 
     ExposedDropdownMenuBox(
         expanded = expanded,

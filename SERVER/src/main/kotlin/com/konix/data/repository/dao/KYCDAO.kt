@@ -54,4 +54,10 @@ object KYCDAO {
                 }
         }
     }
+
+    fun isKYCDoneForUser(userId: Int): Boolean {
+        return transaction {
+            KYC.select { KYC.userId eq userId }.singleOrNull() != null
+        }
+    }
 }

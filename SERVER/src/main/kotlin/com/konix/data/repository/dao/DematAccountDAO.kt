@@ -61,6 +61,12 @@ object DematAccountDAO {
                 }
         }
     }
+
+    fun isDematAccountExistsForUser(userId: Int): Boolean {
+        return transaction {
+            DematAccounts.select { DematAccounts.userId eq userId }.singleOrNull() != null
+        }
+    }
 }
 
 fun generateAccountNumber(): String {

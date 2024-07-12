@@ -2,6 +2,8 @@ package com.konix.controller
 
 import com.konix.data.dto.request.*
 import com.konix.data.dto.response.LoginResponseDTO
+import com.konix.data.repository.dao.DematAccountDAO
+import com.konix.data.repository.dao.KYCDAO
 import com.konix.data.repository.dao.UserDAO
 import com.konix.security.token.TokenClaim
 import com.konix.security.token.TokenConfig
@@ -129,6 +131,22 @@ fun Route.getSecretInfo() {
                     call.respond(HttpStatusCode.OK, userDetails)
                 } ?: call.respond(HttpStatusCode.NotFound)
             } ?: call.respond(HttpStatusCode.Unauthorized)
+        }
+        get("/api/v1/auth/status") {
+            val principal = call.principal<JWTPrincipal>()
+            val userId = principal?.getClaim("userId", String::class)?.toInt()
+            userId?.let {
+                val kycStatus = KYCDAO.isKYCDoneForUser(userId)
+                val dematStatus = DematAccountDAO.isDematAccountExistsForUser(userId)
+                call.respond(HttpStatusCode.OK, mapOf(
+                    "KYC DONE" to kycStatus,
+                    "DEMAT ACCOUNT CREATED" to dematStatus
+                ))
+            } ?: call.respond(HttpStatusCode.Unauthorized)
+        }
+        get("/api/v1/auth/logout") {
+            call.sessions.clear<SignupSessionRequestDTO>()
+            call.respond(HttpStatusCode.OK, "Logged Out Successfully...")
         }
     }
 }
