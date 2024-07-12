@@ -12,6 +12,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
+import com.singhtwenty2.konix.feature_auth.presentation.screen.demat_account_screen.DematAccountCreationScreenComposable
+import com.singhtwenty2.konix.feature_auth.presentation.screen.kyc_screen.KycScreenComposable
 import com.singhtwenty2.konix.feature_auth.presentation.screen.login_screen.LoginScreenComposable
 import com.singhtwenty2.konix.feature_auth.presentation.screen.signup_screen.SignupScreenComposable
 import com.singhtwenty2.konix.feature_auth.presentation.screen.verify_otp_screen.VerifyOtpScreenComposable
@@ -39,6 +41,12 @@ fun AppNavigatorComposable(
             }
             composable("verify_otp_screen") {
                 VerifyOtpScreenComposable(navController = navHostController)
+            }
+            composable("kyc_screen") {
+                KycScreenComposable(navController = navHostController)
+            }
+            composable("demat_screen") {
+                DematAccountCreationScreenComposable(navController = navHostController)
             }
         }
         navigation(

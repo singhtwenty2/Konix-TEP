@@ -2,6 +2,7 @@ package com.singhtwenty2.konix.feature_auth.presentation.component
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -15,9 +16,10 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
 
 @Composable
-fun FormInputFieldComposable(
+fun AddressInputFieldComposable(
     modifier: Modifier = Modifier,
     label: String,
     icon: ImageVector,
@@ -43,8 +45,9 @@ fun FormInputFieldComposable(
                 )
             },
             textStyle = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.fillMaxWidth(),
-            maxLines = 1,
+            modifier = Modifier
+                .fillMaxWidth(),
+            maxLines = 7,
             leadingIcon = {
                 Icon(
                     imageVector = icon,
@@ -60,8 +63,7 @@ fun FormInputFieldComposable(
             keyboardOptions = KeyboardOptions(
                 capitalization = keyboardCapitalization,
                 autoCorrect = autocorrect,
-                keyboardType = keyboardType,
-                imeAction = ImeAction.Next
+                keyboardType = keyboardType
             )
         )
     }

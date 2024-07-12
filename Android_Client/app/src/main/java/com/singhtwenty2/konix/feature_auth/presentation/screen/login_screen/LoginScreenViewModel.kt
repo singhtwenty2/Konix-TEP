@@ -4,6 +4,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.singhtwenty2.konix.feature_auth.domain.model.LoginRequest
+import com.singhtwenty2.konix.feature_auth.domain.model.UserStatusResponse
 import com.singhtwenty2.konix.feature_auth.domain.repository.AuthRepository
 import com.singhtwenty2.konix.feature_auth.util.AuthResponseHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,14 +23,22 @@ class LoginScreenViewModel @Inject constructor(
     private val resultChannel = Channel<AuthResponseHandler<Unit>>()
     val loginResult = resultChannel.receiveAsFlow()
 
+    private val userStatusChannel = Channel<
+            AuthResponseHandler<
+                    UserStatusResponse
+                    >>()
+    val userStatusResult = userStatusChannel.receiveAsFlow()
+
     fun onEvent(event: LoginUiEvent) {
-        when(event) {
+        when (event) {
             is LoginUiEvent.EmailChanged -> {
                 state.value = state.value.copy(email = event.email)
             }
+
             is LoginUiEvent.PasswordChanged -> {
                 state.value = state.value.copy(password = event.password)
             }
+
             LoginUiEvent.LoginClicked -> login()
         }
     }
@@ -44,6 +53,18 @@ class LoginScreenViewModel @Inject constructor(
                 )
             )
             resultChannel.send(result)
+            if (result is AuthResponseHandler.Success) {
+                fetchKycDematStatus()
+            } else {
+                state.value = state.value.copy(isLoading = false)
+            }
+        }
+    }
+
+    private fun fetchKycDematStatus() {
+        viewModelScope.launch {
+            val userStatus = authRepository.getUserStatus()
+            userStatusChannel.send(userStatus)
             state.value = state.value.copy(isLoading = false)
         }
     }

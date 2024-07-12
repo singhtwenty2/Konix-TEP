@@ -35,7 +35,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.singhtwenty2.konix.R
 import com.singhtwenty2.konix.core.ui.theme.ZERODHA_DARK
-import com.singhtwenty2.konix.feature_auth.presentation.component.AuthInputFieldComposable
+import com.singhtwenty2.konix.feature_auth.presentation.component.FormInputFieldComposable
 import com.singhtwenty2.konix.feature_auth.presentation.component.TopSegmentComposable
 import com.singhtwenty2.konix.feature_auth.util.AuthResponseHandler
 
@@ -111,7 +111,7 @@ fun VerifyOtpScreenComposable(
             )
         )
         Spacer(modifier = Modifier.padding(16.dp))
-        AuthInputFieldComposable(
+        FormInputFieldComposable(
             label = "OTP",
             icon = Icons.Rounded.Numbers,
             keyboardType = KeyboardType.Number,

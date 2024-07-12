@@ -6,4 +6,8 @@
     <string name="login_button">Take Me In</string>
     <string name="verify_otp_subtitle">Check Your Email For OTP</string>
     <string name="verify_otp_button">Verify</string>
+    <string name="kyc_screen_sub_headline">Complete Your KYC To Continue</string>
+    <string name="kyc_screen_submit_button">Submit</string>
+    <string name="demat_account_creation">Create Your Demat Account</string>
+    <string name="create_demat_account">Create Demat Account</string>
 </resources>

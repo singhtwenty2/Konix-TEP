@@ -20,12 +20,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 
 @Composable
-fun GenderDropdownComposable(
+fun CustomDropdownComposable(
     modifier: Modifier = Modifier,
     label: String,
     icon: ImageVector,
-    selectedGender: String,
-    genders: List<String>,
+    selectedItem: String,
+    items: List<String>,
     onGenderSelected: (String) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -37,7 +37,7 @@ fun GenderDropdownComposable(
         }
     ) {
         OutlinedTextField(
-            value = selectedGender,
+            value = selectedItem,
             onValueChange = {},
             label = {
                 Text(
@@ -65,7 +65,7 @@ fun GenderDropdownComposable(
             expanded = expanded,
             onDismissRequest = { expanded = false }
         ) {
-            genders.forEach { gender ->
+            items.forEach { gender ->
                 DropdownMenuItem(
                     text = { Text(gender) },
                     onClick = {

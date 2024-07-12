@@ -38,7 +38,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.singhtwenty2.konix.R
 import com.singhtwenty2.konix.core.ui.theme.ZERODHA_DARK
-import com.singhtwenty2.konix.feature_auth.presentation.component.AuthInputFieldComposable
+import com.singhtwenty2.konix.feature_auth.presentation.component.FormInputFieldComposable
 import com.singhtwenty2.konix.feature_auth.presentation.component.TopSegmentComposable
 import com.singhtwenty2.konix.feature_auth.util.AuthResponseHandler
 
@@ -62,11 +62,11 @@ fun LoginScreenComposable(
                         "Login successful",
                         Toast.LENGTH_SHORT
                     ).show()
-                    navController.navigate("home_feature") {
-                        popUpTo("auth_feature") {
-                            inclusive = true
-                        }
-                    }
+//                    navController.navigate("home_feature") {
+//                        popUpTo("auth_feature") {
+//                            inclusive = true
+//                        }
+//                    }
                 }
 
                 is AuthResponseHandler.BadRequest -> {
@@ -104,6 +104,68 @@ fun LoginScreenComposable(
         }
     }
 
+    LaunchedEffect(viewModel, context) {
+        viewModel.userStatusResult.collect { result ->
+            when (result) {
+                is AuthResponseHandler.Success -> {
+                    val kycStatus = result.data?.isKycDone ?: false
+                    val dematStatus = result.data?.isDematCreated ?: false
+                    if (kycStatus && dematStatus) {
+                        navController.navigate("home_feature") {
+                            popUpTo("auth_feature") {
+                                inclusive = true
+                            }
+                        }
+                    } else if (!kycStatus) {
+                        navController.navigate("kyc_screen") {
+                            popUpTo("login_screen") {
+                                inclusive = true
+                            }
+                        }
+                    } else if (!dematStatus) {
+                        navController.navigate("demat_screen") {
+                            popUpTo("login_screen") {
+                                inclusive = true
+                            }
+                        }
+                    }
+                }
+
+                is AuthResponseHandler.BadRequest -> {
+                    Toast.makeText(
+                        context,
+                        "Bad Request. Please check your input(KYC/DEMAT)",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                is AuthResponseHandler.InternalServerError -> {
+                    Toast.makeText(
+                        context,
+                        "Internal Server Error. Please try again later(KYC/DEMAT)",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                is AuthResponseHandler.UnAuthorized -> {
+                    Toast.makeText(
+                        context,
+                        "UnAuthorized. Please login again(KYC/DEMAT)",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                is AuthResponseHandler.UnknownError -> {
+                    Toast.makeText(
+                        context,
+                        "Unknown error occurred. Please try again later(KYC/DEMAT)",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
+    }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -119,7 +181,7 @@ fun LoginScreenComposable(
             )
         )
         Spacer(modifier = Modifier.padding(16.dp))
-        AuthInputFieldComposable(
+        FormInputFieldComposable(
             label = "Email",
             icon = Icons.Rounded.MarkEmailRead,
             keyboardType = KeyboardType.Email,
@@ -130,7 +192,7 @@ fun LoginScreenComposable(
             viewModel.onEvent(LoginUiEvent.EmailChanged(it))
         }
         Spacer(modifier = Modifier.height(16.dp))
-        AuthInputFieldComposable(
+        FormInputFieldComposable(
             label = "Password",
             icon = Icons.Rounded.Lock,
             keyboardType = KeyboardType.Password,

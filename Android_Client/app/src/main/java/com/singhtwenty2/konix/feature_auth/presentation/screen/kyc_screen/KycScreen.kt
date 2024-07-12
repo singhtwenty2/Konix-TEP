@@ -1,15 +1,13 @@
-package com.singhtwenty2.konix.feature_auth.presentation.screen.signup_screen
+package com.singhtwenty2.konix.feature_auth.presentation.screen.kyc_screen
 
 import android.content.Context
 import android.os.Vibrator
 import android.widget.Toast
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,12 +16,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Cake
-import androidx.compose.material.icons.rounded.Lock
-import androidx.compose.material.icons.rounded.Man
-import androidx.compose.material.icons.rounded.MarkEmailRead
-import androidx.compose.material.icons.rounded.Person2
-import androidx.compose.material.icons.twotone.Lock
+import androidx.compose.material.icons.rounded.FiberNew
+import androidx.compose.material.icons.rounded.HomeWork
+import androidx.compose.material.icons.rounded.Inventory
+import androidx.compose.material.icons.rounded.LocalFlorist
+import androidx.compose.material.icons.rounded.Money
+import androidx.compose.material.icons.rounded.Newspaper
+import androidx.compose.material.icons.rounded.Phone
+import androidx.compose.material.icons.rounded.Work
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -42,69 +42,50 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.singhtwenty2.konix.R
 import com.singhtwenty2.konix.core.ui.theme.ZERODHA_DARK
+import com.singhtwenty2.konix.feature_auth.presentation.component.AddressInputFieldComposable
 import com.singhtwenty2.konix.feature_auth.presentation.component.FormInputFieldComposable
 import com.singhtwenty2.konix.feature_auth.presentation.component.CustomDropdownComposable
 import com.singhtwenty2.konix.feature_auth.presentation.component.TopSegmentComposable
 import com.singhtwenty2.konix.feature_auth.util.AuthResponseHandler
 
 @Composable
-fun SignupScreenComposable(
+fun KycScreenComposable(
     modifier: Modifier = Modifier,
-    viewModel: SignupScreenViewModel = hiltViewModel(),
-    navController: NavController
+    navController: NavController,
+    viewModel: KycScreenViewModel = hiltViewModel()
 ) {
-
-    val state = viewModel.state
+    var state = viewModel.state.value
     val context = LocalContext.current
     val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
     val uiColor = if (isSystemInDarkTheme()) ZERODHA_DARK else MaterialTheme.colorScheme.background
 
     LaunchedEffect(viewModel, context) {
-        viewModel.signupResult.collect { result ->
-            when (result) {
+        viewModel.kycResult.collect{ result ->
+            when(result) {
                 is AuthResponseHandler.Success -> {
-                    Toast.makeText(
-                        context,
-                        "Signup successful. Please verify your email to login",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    navController.navigate("verify_otp_screen")
+                    vibrator.vibrate(100)
+                    navController.navigate("demat_screen") {
+                        popUpTo("kyc_screen") {
+                            inclusive = true
+                        }
+                    }
                 }
-
                 is AuthResponseHandler.BadRequest -> {
-                    Toast.makeText(
-                        context,
-                        "Bad Request. Please check your input",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    state = state.copy(error = "Bad Request")
                 }
-
                 is AuthResponseHandler.InternalServerError -> {
-                    Toast.makeText(
-                        context,
-                        "Internal Server Error. Please try again later",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    state = state.copy(error = "Internal Server Error")
                 }
-
                 is AuthResponseHandler.UnAuthorized -> {
-                    Toast.makeText(
-                        context,
-                        "UnAuthorized. Please login again",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    state = state.copy(error = "UnAuthorized")
                 }
-
                 is AuthResponseHandler.UnknownError -> {
-                    Toast.makeText(
-                        context,
-                        "Unknown error occurred. Please try again later",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    state = state.copy(error = "Unknown Error")
                 }
             }
         }
     }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -114,77 +95,109 @@ fun SignupScreenComposable(
             .padding(16.dp)
             .verticalScroll(rememberScrollState())
     ) {
+        Spacer(modifier = Modifier.height(32.dp))
         TopSegmentComposable(
             subHeadLine = stringResource(
-                id =R.string.signup_screen_subtitle
-            ))
+                id = R.string.kyc_screen_sub_headline
+            )
+        )
         Spacer(modifier = Modifier.padding(16.dp))
         FormInputFieldComposable(
-            label = "Name",
-            icon = Icons.Rounded.Person2,
-            keyboardType = KeyboardType.Text,
-            keyboardCapitalization = KeyboardCapitalization.Words,
-            autocorrect = false,
-            initialValue = state.value.name
-        ) {
-            viewModel.onEvent(SignupUiEvent.NameChanged(it))
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        FormInputFieldComposable(
-            label = "Email",
-            icon = Icons.Rounded.MarkEmailRead,
-            keyboardType = KeyboardType.Email,
-            keyboardCapitalization = KeyboardCapitalization.None,
-            autocorrect = false,
-            initialValue = state.value.email
-        ) {
-            viewModel.onEvent(SignupUiEvent.EmailChanged(it))
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        FormInputFieldComposable(
-            label = "Age",
-            icon = Icons.Rounded.Cake,
+            label = "Phone Number",
+            icon = Icons.Rounded.Phone,
             keyboardType = KeyboardType.Number,
             keyboardCapitalization = KeyboardCapitalization.None,
             autocorrect = false,
-            initialValue = state.value.age
+            initialValue = state.phoneNumber
         ) {
-            viewModel.onEvent(SignupUiEvent.AgeChanged(it))
+            viewModel.onEvent(KycUiEvent.PhoneNumberChanged(it))
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        FormInputFieldComposable(
+            label = "Aadhar Number",
+            icon = Icons.Rounded.Newspaper,
+            keyboardType = KeyboardType.Number,
+            keyboardCapitalization = KeyboardCapitalization.None,
+            autocorrect = false,
+            initialValue = state.aadharNumber
+        ) {
+            viewModel.onEvent(KycUiEvent.AadharNumberChanged(it))
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        FormInputFieldComposable(
+            label = "Pan Number",
+            icon = Icons.Rounded.FiberNew,
+            keyboardType = KeyboardType.Text,
+            keyboardCapitalization = KeyboardCapitalization.Characters,
+            autocorrect = false,
+            initialValue = state.panNumber
+        ) {
+            viewModel.onEvent(KycUiEvent.PanNumberChanged(it))
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        FormInputFieldComposable(
+            label = "Annual Income",
+            icon = Icons.Rounded.Money,
+            keyboardType = KeyboardType.Number,
+            keyboardCapitalization = KeyboardCapitalization.None,
+            autocorrect = false,
+            initialValue = state.annualIncome
+        ) {
+            viewModel.onEvent(KycUiEvent.AnnualIncomeChanged(it))
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        AddressInputFieldComposable(
+            label = "Permanent Address",
+            icon = Icons.Rounded.HomeWork,
+            keyboardType = KeyboardType.Text,
+            keyboardCapitalization = KeyboardCapitalization.Words,
+            autocorrect = false,
+            initialValue = state.address,
+        ) {
+            viewModel.onEvent(KycUiEvent.AddressChanged(it))
         }
         Spacer(modifier = Modifier.height(16.dp))
         CustomDropdownComposable(
-            label = "Gender",
-            icon = Icons.Rounded.Man,
-            selectedItem = state.value.gender,
+            label = "Employment Status",
+            icon = Icons.Rounded.Work,
+            selectedItem = state.employmentStatus,
             items = listOf(
-                "MALE",
-                "FEMALE",
-                "LGBTQ_GROUP"
+                "EMPLOYED",
+                "SELF_EMPLOYED",
+                "UNEMPLOYED",
+                "STUDENT",
+                "RETIRED",
+                "OTHER"
             )
         ) {
-            viewModel.onEvent(SignupUiEvent.GenderChanged(it))
+            viewModel.onEvent(KycUiEvent.EmploymentStatusChanged(it))
         }
         Spacer(modifier = Modifier.height(16.dp))
-        FormInputFieldComposable(
-            label = "Password",
-            icon = Icons.Rounded.Lock,
-            keyboardType = KeyboardType.Password,
-            keyboardCapitalization = KeyboardCapitalization.None,
-            autocorrect = false,
-            initialValue = state.value.password
+        CustomDropdownComposable(
+            label = "Investment Experience",
+            icon = Icons.Rounded.Inventory,
+            selectedItem = state.investmentExperience,
+            items = listOf(
+                "NONE",
+                "LIMITED",
+                "GOOD",
+                "EXTENSIVE"
+            )
         ) {
-            viewModel.onEvent(SignupUiEvent.PasswordChanged(it))
+            viewModel.onEvent(KycUiEvent.InvestmentExperienceChanged(it))
         }
         Spacer(modifier = Modifier.height(16.dp))
-        FormInputFieldComposable(
-            label = "Confirm Password",
-            icon = Icons.TwoTone.Lock,
-            keyboardType = KeyboardType.Password,
-            keyboardCapitalization = KeyboardCapitalization.None,
-            autocorrect = false,
-            initialValue = state.value.confirmPassword
+        CustomDropdownComposable(
+            label = "Risk Tolerance",
+            icon = Icons.Rounded.LocalFlorist,
+            selectedItem = state.riskTolerance,
+            items = listOf(
+                "LOW",
+                "MEDIUM",
+                "HIGH"
+            )
         ) {
-            viewModel.onEvent(SignupUiEvent.ConfirmPasswordChanged(it))
+            viewModel.onEvent(KycUiEvent.RiskToleranceChanged(it))
         }
         Spacer(modifier = Modifier.height(16.dp))
         Button(
@@ -192,7 +205,7 @@ fun SignupScreenComposable(
                 .fillMaxWidth()
                 .height(56.dp)
                 .padding(horizontal = 28.dp),
-            enabled = !state.value.isLoading,
+            enabled = !state.isLoading,
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary,
@@ -200,49 +213,27 @@ fun SignupScreenComposable(
                 disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
             ),
             onClick = {
-                if (state.value.name.isEmpty() || state.value.email.isEmpty() || state.value.age.isEmpty() || state.value.password.isEmpty() || state.value.confirmPassword.isEmpty()) {
+                if(state.phoneNumber.isEmpty() || state.aadharNumber.isEmpty() || state.panNumber.isEmpty() || state.annualIncome.isEmpty() || state.address.isEmpty() || state.employmentStatus.isEmpty() || state.investmentExperience.isEmpty() || state.riskTolerance.isEmpty()) {
                     Toast.makeText(
                         context,
                         "Please fill all the fields",
                         Toast.LENGTH_SHORT
                     ).show()
-                    vibrator.vibrate(40)
+                    vibrator.vibrate(100)
                 } else {
                     vibrator.vibrate(30)
-                    viewModel.onEvent(SignupUiEvent.SignupClicked)
+                    viewModel.onEvent(KycUiEvent.SubmitKyc)
                 }
             }
         ) {
             Text(
-                text = stringResource(id = R.string.signup_button),
+                text = stringResource(id = R.string.kyc_screen_submit_button),
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.onPrimary
             )
         }
-        Spacer(modifier = Modifier.height(16.dp))
-        Row(
-            modifier = Modifier.padding(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "Already have an account? ",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-            Text(
-                text = "Login",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier
-                    .padding(start = 4.dp)
-                    .clickable {
-                        navController.navigate("login_screen")
-                    }
-            )
-        }
     }
-    if(state.value.isLoading) {
+    if(state.isLoading) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
