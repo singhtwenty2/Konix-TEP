@@ -2,6 +2,10 @@ package com.singhtwenty2.konix.core.navigation
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
@@ -33,7 +37,18 @@ fun AppNavigatorComposable(
     NavHost(
         navController = navHostController,
         startDestination = startDestination,
-    ) {
+        enterTransition = {
+            fadeIn(animationSpec = tween(550)) + slideIntoContainer(
+                AnimatedContentTransitionScope.SlideDirection.Right, tween(550)
+            )
+        },
+        exitTransition = {
+            fadeOut(animationSpec = tween(550)) + slideOutOfContainer(
+                AnimatedContentTransitionScope.SlideDirection.Left, tween(550)
+            )
+        },
+
+        ) {
         navigation(
             startDestination = "login_screen",
             route = "auth_feature",
