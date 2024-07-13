@@ -4,13 +4,15 @@ import com.konix.data.dto.request.*
 import com.konix.data.dto.response.LoginResponseDTO
 import com.konix.data.repository.dao.DematAccountDAO
 import com.konix.data.repository.dao.KYCDAO
-import com.konix.data.repository.dao.UserDAO
 import com.konix.security.token.TokenClaim
 import com.konix.security.token.TokenConfig
 import com.konix.security.token.TokenService
 import com.konix.service.auth.EmailService
 import com.konix.service.auth.OtpService
+import com.konix.service.user.UserService
 import com.konix.util.RecordCreationErrorHandler
+import com.konix.util.RecordCreationResponse
+import com.konix.util.UserCreationErrorHandler
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -23,27 +25,22 @@ import org.slf4j.LoggerFactory
 
 private val logger = LoggerFactory.getLogger("Controller")
 
-fun Route.welcome() {
-    get("/api/v1/") {
-        call.respond("Hello There !")
-    }
-}
-
 fun Route.signup(
     emailService: EmailService,
-    otpService: OtpService
+    otpService: OtpService,
+    userService: UserService  // Inject UserService dependency
 ) {
     post("/api/v1/auth/signup") {
         val requestDTO = call.receive<SignupRequestDTO>()
         val userEmail = requestDTO.email
         logger.info("Received signup request for email: $userEmail")
 
-        if(UserDAO.checkUserExists(email = userEmail)) {
+        if (userService.checkUserExists(userEmail)) {
             logger.warn("User already exists with email: $userEmail")
             call.respond(HttpStatusCode.Conflict, "User Already Exists With This Email $userEmail...")
             return@post
         } else {
-            if(emailService.sendOtpAsEmail(userEmail = userEmail, otp = otpService.generateOtp())) {
+            if (emailService.sendOtpAsEmail(userEmail = userEmail, otp = otpService.generateOtp())) {
                 logger.info("OTP sent to email: $userEmail")
                 call.sessions.set(SignupSessionRequestDTO(
                     email = requestDTO.email,
@@ -69,13 +66,15 @@ fun Route.signup(
         if (session != null) {
             if (otpService.verifyOtp(userEmail = session.email, otp = requestDTO.otp)) {
                 logger.info("OTP verified for email: ${session.email}")
-                when (val result = UserDAO.createUser(session)) {
-                    is RecordCreationErrorHandler.AlreadyExists -> {
+                when (val result = userService.createUser(session)) {
+                    is RecordCreationResponse.AlreadyExists -> {
                         logger.warn("User already exists during creation for email: ${session.email}")
                         call.respond(HttpStatusCode.Conflict, result.errorMessage)
                     }
-                    is RecordCreationErrorHandler.Success -> {
+                    is RecordCreationResponse.Success -> {
                         logger.info("User created successfully for email: ${session.email}")
+                        // Initialize portfolio
+                        userService.initializePortfolio(result.userId)
                         call.sessions.clear<SignupSessionRequestDTO>()
                         call.respond(HttpStatusCode.OK, result.successMessage)
                     }
@@ -93,13 +92,14 @@ fun Route.signup(
 
 fun Route.login(
     tokenConfig: TokenConfig,
-    tokenService: TokenService
+    tokenService: TokenService,
+    userService: UserService  // Inject UserService dependency
 ) {
     post("/api/v1/auth/login") {
         val requestDTO = call.receive<LoginRequestDTO>()
         logger.info("Received login request for email: ${requestDTO.email}")
 
-        val user = UserDAO.loginUser(requestDTO)
+        val user = userService.loginUser(requestDTO)
         if (user != null) {
             val token = tokenService.generate(
                 config = tokenConfig,
@@ -114,7 +114,9 @@ fun Route.login(
     }
 }
 
-fun Route.getSecretInfo() {
+fun Route.getSecretInfo(
+    userService: UserService  // Inject UserService dependency
+) {
     authenticate {
         get("/api/v1/auth/secret") {
             val principal = call.principal<JWTPrincipal>()
@@ -126,7 +128,7 @@ fun Route.getSecretInfo() {
             val principal = call.principal<JWTPrincipal>()
             val userId = principal?.getClaim("userId", String::class)?.toInt()
             userId?.let {
-                val userDetails = UserDAO.getUserDetails(userId)
+                val userDetails = userService.getUserDetails(userId)
                 userDetails?.let {
                     call.respond(HttpStatusCode.OK, userDetails)
                 } ?: call.respond(HttpStatusCode.NotFound)

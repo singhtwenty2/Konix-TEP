@@ -11,14 +11,11 @@ import kotlin.math.min
 
 object OrderDAO {
 
-    fun createOrder(
-        userId: Int,
-        requestDTO: OrderRequestDTO
-    ): OrderResponseDTO {
+    fun createOrder(userId: Int, requestDTO: OrderRequestDTO): OrderResponseDTO {
         var orderId: Int? = null
         transaction {
             // Determine the initial order status
-            val orderStatus = determineOrderStatus(requestDTO)
+            val orderStatus = OrderStatus.OPEN
             // Insert the order into the database
             Orders.insert {
                 it[Orders.userId] = userId
@@ -67,7 +64,7 @@ object OrderDAO {
     }
 
 
-    private fun getOrderById(orderId: Int): OrderResponseDTO? {
+    fun getOrderById(orderId: Int): OrderResponseDTO? {
         return transaction {
             Orders.select { Orders.id eq orderId }.map {
                 OrderResponseDTO(
@@ -103,10 +100,7 @@ object OrderDAO {
         }
     }
 
-    fun updateOrderStatus(
-        orderId: Int,
-        status: String
-    ) {
+    fun updateOrderStatus(orderId: Int, status: String) {
         return transaction {
             Orders.update({ Orders.id eq orderId }) {
                 it[orderStatus] = status

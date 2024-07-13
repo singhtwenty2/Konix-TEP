@@ -2,6 +2,7 @@ package com.konix.util
 
 class InsufficientBalanceException(message: String) : Exception(message)
 class DematAccountNotFoundException(message: String) : Exception(message)
+class InsufficientStockException(message: String) : Exception(message)
 class OrderNotFoundException(message: String) : Exception(message)
 class OrderAlreadyExistsException(message: String) : Exception(message)
 class OrderStatusChangeException(message: String) : Exception(message)

@@ -8,7 +8,7 @@ import com.konix.data.dto.response.UserDetailResponseDTO
 import com.konix.data.repository.entity.Users
 import com.konix.security.hashing.SHA256HashingService
 import com.konix.security.hashing.SaltedHash
-import com.konix.util.RecordCreationErrorHandler
+import com.konix.util.UserCreationErrorHandler
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -17,7 +17,7 @@ object UserDAO {
 
     private val hashingService = SHA256HashingService()
 
-    fun createUser(signupSessionRequestDTO: SignupSessionRequestDTO): RecordCreationErrorHandler {
+    fun createUser(signupSessionRequestDTO: SignupSessionRequestDTO): UserCreationErrorHandler {
 
         val saltedHash = hashingService.generateSaltedHash(
             value = signupSessionRequestDTO.password
@@ -26,7 +26,7 @@ object UserDAO {
         return transaction {
             val existingRecord = Users.select { Users.email eq signupSessionRequestDTO.email }.singleOrNull()
             if (existingRecord != null) {
-                return@transaction RecordCreationErrorHandler
+                return@transaction UserCreationErrorHandler
                     .AlreadyExists("Account Already Exits With The Given Email...")
             } else {
                 Users.insert {
@@ -37,8 +37,10 @@ object UserDAO {
                     it[password] = saltedHash.hash
                     it[salt] = saltedHash.salt
                 }
-                RecordCreationErrorHandler
-                    .Success("Created Account Successfully...")
+                UserCreationErrorHandler.Success(
+                    successMessage = "User Created Successfully...",
+                    userId = Users.select { Users.email eq signupSessionRequestDTO.email }.single()[Users.userId]
+                )
             }
         }
     }

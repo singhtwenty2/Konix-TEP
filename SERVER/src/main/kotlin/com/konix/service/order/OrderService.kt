@@ -2,14 +2,18 @@ package com.konix.service.order
 
 import com.konix.data.dto.request.OrderRequestDTO
 import com.konix.data.dto.request.TransactionRequestDTO
+import com.konix.data.dto.request.enums.OrderStatus
+import com.konix.data.dto.request.enums.OrderType
 import com.konix.data.dto.response.DematAccountResponseDTO
 import com.konix.data.dto.response.OrderResponseDTO
 import com.konix.data.dto.response.TransactionResponsetDTO
 import com.konix.data.repository.dao.DematAccountDAO
 import com.konix.data.repository.dao.OrderDAO
+import com.konix.data.repository.dao.PortfolioDAO
 import com.konix.data.repository.dao.TransactionDAO
 import com.konix.util.DematAccountNotFoundException
 import com.konix.util.InsufficientBalanceException
+import com.konix.util.InsufficientStockException
 import org.jetbrains.exposed.sql.transactions.transaction
 import kotlin.math.min
 
@@ -18,18 +22,23 @@ class OrderService {
     private val orderDao = OrderDAO
     private val transactionDao = TransactionDAO
     private val dematAccountDao = DematAccountDAO
+    private val portfolioDao = PortfolioDAO
 
     fun placeOrder(userId: Int, orderRequestDTO: OrderRequestDTO): OrderResponseDTO {
         val dematAccount = dematAccountDao.getDematAccountDetails(userId)
             ?: throw DematAccountNotFoundException("Demat Account Not Found")
 
-        // Check for sufficient balance
-        if (orderRequestDTO.orderType.name == "BUY" && dematAccount.balance < (orderRequestDTO.price * orderRequestDTO.quantity)) {
-            throw InsufficientBalanceException("Insufficient Balance")
-        }
-
-        // To ensure atomicity
         return transaction {
+            // Check for sufficient balance for BUY orders
+            if (orderRequestDTO.orderType == OrderType.BUY && dematAccount.balance < (orderRequestDTO.price * orderRequestDTO.quantity)) {
+                throw InsufficientBalanceException("Insufficient Balance")
+            }
+
+            // Handle SELL orders
+            if (orderRequestDTO.orderType == OrderType.SELL) {
+                checkStockQuantity(userId, orderRequestDTO)
+            }
+
             // Place order
             val createOrder = orderDao.createOrder(
                 userId = userId,
@@ -39,74 +48,93 @@ class OrderService {
             // Update balance
             updateBalance(userId, orderRequestDTO, dematAccount)
 
+            // Update portfolio
+            updatePortfolio(userId, orderRequestDTO)
+
             // Match orders
-            matchOrder(createOrder)
+            matchOrders(createOrder)
 
             createOrder
         }
     }
 
+    private fun checkStockQuantity(userId: Int, orderRequestDTO: OrderRequestDTO) {
+        val currentStockQuantity = portfolioDao.getStockQuantity(userId, orderRequestDTO.companyId)
+        val requestedStockQuantity = orderRequestDTO.quantity
+
+        if (currentStockQuantity < requestedStockQuantity) {
+            throw InsufficientStockException("Insufficient Stocks")
+        }
+    }
+
+    private fun updatePortfolio(userId: Int, orderRequestDTO: OrderRequestDTO) {
+        val stockQuantity = portfolioDao.getStockQuantity(userId, orderRequestDTO.companyId)
+        val newQuantity = when (orderRequestDTO.orderType) {
+            OrderType.BUY -> stockQuantity + orderRequestDTO.quantity
+            OrderType.SELL -> stockQuantity - orderRequestDTO.quantity
+        }
+        portfolioDao.updateStockQuantity(userId, orderRequestDTO.companyId, newQuantity)
+    }
+
     private fun updateBalance(userId: Int, orderRequestDTO: OrderRequestDTO, dematAccount: DematAccountResponseDTO) {
         val totalAmount = orderRequestDTO.price * orderRequestDTO.quantity
-        val newBalance = when (orderRequestDTO.orderType.name) {
-            "BUY" -> dematAccount.balance - totalAmount
-            "SELL" -> dematAccount.balance + totalAmount
-            else -> dematAccount.balance
+        val newBalance = when (orderRequestDTO.orderType) {
+            OrderType.BUY -> dematAccount.balance - totalAmount
+            OrderType.SELL -> dematAccount.balance + totalAmount
         }
-
         dematAccountDao.updateBalance(userId, newBalance.toBigDecimal())
     }
 
-    private fun matchOrder(responseDTO: OrderResponseDTO) {
-        val openOrders = orderDao.getOpenOrdersByCompany(responseDTO.companyId)
+    private fun matchOrders(newOrder: OrderResponseDTO) {
+        val oppositeOrders = orderDao.getOpenOrdersByCompany(newOrder.companyId)
 
         transaction {
-            for (openOrder in openOrders) {
-                try {
-                    if (
-                        (responseDTO.orderType == "BUY" && openOrder.orderType == "SELL" && responseDTO.price >= openOrder.price) ||
-                        (responseDTO.orderType == "SELL" && openOrder.orderType == "BUY" && responseDTO.price <= openOrder.price)
-                    ) {
-                        val matchedQuantity = min(responseDTO.quantity, openOrder.quantity)
+            for (oppositeOrder in oppositeOrders) {
+                if (newOrder.quantity <= 0) break
 
-                        transactionDao.createTransaction(
-                            TransactionRequestDTO(
-                                orderId = openOrder.orderId,
-                                userId = openOrder.userId,
-                                companyId = openOrder.companyId,
-                                quantity = matchedQuantity,
-                                price = openOrder.price
-                            )
+                if (
+                    ((newOrder.orderType == OrderType.BUY.name) && (oppositeOrder.orderType == OrderType.SELL.name) && (newOrder.price >= oppositeOrder.price)) ||
+                    ((newOrder.orderType == OrderType.SELL.name) && (oppositeOrder.orderType == OrderType.BUY.name) && (newOrder.price <= oppositeOrder.price))
+                ) {
+                    val matchQuantity = min(newOrder.quantity, oppositeOrder.quantity)
+
+                    // Create transaction
+                    transactionDao.createTransaction(
+                        TransactionRequestDTO(
+                            orderId = newOrder.orderId,
+                            userId = newOrder.userId,
+                            companyId = newOrder.companyId,
+                            quantity = matchQuantity,
+                            price = oppositeOrder.price
                         )
+                    )
 
-                        responseDTO.quantity -= matchedQuantity
-                        openOrder.quantity -= matchedQuantity
+                    // Update quantities
+                    newOrder.quantity -= matchQuantity
+                    oppositeOrder.quantity -= matchQuantity
 
-                        if (responseDTO.quantity == 0) {
-                            orderDao.updateOrderStatus(responseDTO.orderId, "FILLED")
-                            break
-                        } else {
-                            orderDao.updateOrderStatus(openOrder.orderId, "PARTIALLY_FILLED")
-                        }
-
-                        if (openOrder.quantity == 0) {
-                            orderDao.updateOrderStatus(openOrder.orderId, "FILLED")
-                        } else {
-                            orderDao.updateOrderStatus(openOrder.orderId, "PARTIALLY_FILLED")
-                        }
+                    // Update statuses
+                    if (oppositeOrder.quantity == 0) {
+                        orderDao.updateOrderStatus(oppositeOrder.orderId, OrderStatus.FILLED.name)
+                    } else {
+                        orderDao.updateOrderStatus(oppositeOrder.orderId, OrderStatus.PARTIALLY_FILLED.name)
                     }
-                } catch (e: Exception) {
-                    // Handle any exceptions, log errors for debugging
-                    println("Error processing order match: ${e.message}")
+
+                    if (newOrder.quantity == 0) {
+                        orderDao.updateOrderStatus(newOrder.orderId, OrderStatus.FILLED.name)
+                        break
+                    } else {
+                        orderDao.updateOrderStatus(newOrder.orderId, OrderStatus.PARTIALLY_FILLED.name)
+                    }
                 }
             }
 
-            if (responseDTO.quantity > 0) {
-                orderDao.updateOrderStatus(responseDTO.orderId, "OPEN")
+            // If no match found, keep newOrder as OPEN
+            if (newOrder.quantity > 0 && newOrder.orderStatus != OrderStatus.PARTIALLY_FILLED.name) {
+                orderDao.updateOrderStatus(newOrder.orderId, OrderStatus.OPEN.name)
             }
         }
     }
-
 
     fun getOrdersByUserId(userId: Int): List<OrderResponseDTO?> {
         return orderDao.getOrdersByUserId(userId)
@@ -116,3 +144,4 @@ class OrderService {
         return transactionDao.getTransactionsByUser(userId)
     }
 }
+

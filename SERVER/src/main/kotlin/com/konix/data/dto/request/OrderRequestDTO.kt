@@ -1,6 +1,5 @@
 package com.konix.data.dto.request
 
-import com.konix.data.dto.request.enums.OrderStatus
 import com.konix.data.dto.request.enums.OrderType
 import kotlinx.serialization.Serializable
 

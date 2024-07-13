@@ -8,7 +8,6 @@ object Portfolios : Table() {
     val userId = integer("user_id").references(Users.userId)
     val companyId = integer("company_id").references(Companies.companyId)
     val quantity = integer("quantity")
-    val averagePrice = decimal("average_price", 10, 2)
 
     override val primaryKey = PrimaryKey(id)
 }
