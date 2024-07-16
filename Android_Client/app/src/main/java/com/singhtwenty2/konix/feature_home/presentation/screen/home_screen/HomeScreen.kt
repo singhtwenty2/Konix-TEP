@@ -107,19 +107,52 @@ fun HomeScreenComposable(
                 }
             }
         }
+
+        viewModel.companyInfoResult.collect { result ->
+            when (result) {
+                is CompanyResponseHandler.Success -> {
+                    val companyDetails = result.data
+                    companyDetails?.let {
+                        state.value = state.value.copy(
+                            companyDetails = companyDetails,
+                            isLoading = false,
+                            isBottomSheetOpen = true
+                        )
+                    } ?: run {
+                        state.value = state.value.copy(
+                            isLoading = false,
+                            error = "Company details not found"
+                        )
+                    }
+                }
+
+                else -> {
+                    state.value = state.value.copy(
+                        isLoading = false,
+                        error = result.message
+                    )
+                }
+            }
+        }
     }
 
     BottomSheetScaffold(
         scaffoldState = scaffoldState,
         sheetPeekHeight = 0.dp,
         sheetContent = {
-            CompanyInfoScreenComposable(
-                navController = navController,
-                onBuyClick = {
+            val selectedCompany = state.value.selectedCompany
+            selectedCompany?.let { company ->
+                CompanyInfoScreenComposable(
+                    navController = navController,
+                    onBuyClick = {
+                        vibrator.vibrate(30)
+                        navController.navigate("buy_screen/${company.id}/BUY")
+                        Log.d("Navigation", "Company clicked: ${company.id} BUY")
+                    }
+                ) {
                     vibrator.vibrate(30)
+                    navController.navigate("buy_screen/${company.id}/SELL")
                 }
-            ) {
-                vibrator.vibrate(30)
             }
         },
         containerColor = MaterialTheme.colorScheme.surface,
@@ -178,6 +211,7 @@ fun HomeScreenComposable(
                                         scaffoldState.bottomSheetState.expand()
                                     }
                                     vibrator.vibrate(50)
+                                    viewModel.setSelectedCompany(company.id)
                                     Log.d("HomeScreenComposable", "Company clicked: $company")
                                 }
                                 .padding(16.dp)

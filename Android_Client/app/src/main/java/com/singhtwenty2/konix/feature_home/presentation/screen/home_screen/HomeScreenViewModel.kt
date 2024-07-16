@@ -48,6 +48,7 @@ class HomeScreenViewModel @Inject constructor(
             }
 
             is HomeScreenUiEvents.CompanyClicked -> {
+                setSelectedCompany(event.id)
                 getCompanyDetails(event.id)
             }
 
@@ -69,7 +70,22 @@ class HomeScreenViewModel @Inject constructor(
             state.value = state.value.copy(isLoading = true)
             val result = companyRepository.getCompanyDetailsById(id)
             companyInfoResultChannel.send(result)
-            state.value = state.value.copy(isLoading = false)
+            when (result) {
+                is CompanyResponseHandler.Success -> {
+                    state.value = state.value.copy(
+                        companyDetails = result.data,
+                        isLoading = false
+                    )
+                }
+                else -> {
+                    state.value = state.value.copy(isLoading = false)
+                }
+            }
         }
+    }
+
+    fun setSelectedCompany(id: Int) {
+        val company = state.value.companyList.find { it.id == id }
+        state.value = state.value.copy(selectedCompany = company)
     }
 }

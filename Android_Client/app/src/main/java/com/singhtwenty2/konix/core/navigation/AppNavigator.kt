@@ -26,6 +26,8 @@ import com.singhtwenty2.konix.feature_auth.presentation.screen.verify_otp_screen
 import com.singhtwenty2.konix.feature_home.presentation.screen.exchange_screen.ExchangeDetailScreenComposable
 import com.singhtwenty2.konix.feature_home.presentation.screen.home_screen.HomeScreenComposable
 import com.singhtwenty2.konix.feature_home.presentation.screen.stock_chart_screen.StockChartScreenComposable
+import com.singhtwenty2.konix.feature_order_placing.presentation.screen.buyer_screen.BuyerScreenComposable
+import com.singhtwenty2.konix.feature_order_placing.presentation.screen.order_detail_screen.OrderScreenComposable
 import com.singhtwenty2.konix.feature_profile.presentation.profile_screen.ProfileScreenComposable
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -124,6 +126,31 @@ fun AppNavigatorComposable(
                 ) {
                     Text(text = "Portfolio Screen")
                 }
+            }
+            composable(
+                route = "buy_screen/{companyId}/{orderType}",
+                arguments = listOf(
+                    navArgument("companyId") {
+                        type = NavType.IntType
+                    },
+                    navArgument("orderType") {
+                        type = NavType.StringType
+                    }
+                )
+            ) { entry ->
+                val companyId = entry.arguments?.getInt("companyId") ?: 0
+                val orderType = entry.arguments?.getString("orderType") ?: ""
+
+                BuyerScreenComposable(
+                    companyId = companyId,
+                    orderType = orderType,
+                    navController = navHostController
+                )
+            }
+            composable(
+                route = "order_detail_screen"
+            ) {
+                OrderScreenComposable(navController = navHostController)
             }
         }
     }

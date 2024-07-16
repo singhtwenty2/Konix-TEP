@@ -10,5 +10,6 @@ data class HomeScreenState(
     val isBottomSheetOpen: Boolean = false,
     val companyDetails: FullCompanyDetailsResponse? = null,
     val isRefreshing: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+    val selectedCompany: CompanyListing? = null // Add selectedCompany here
 )
