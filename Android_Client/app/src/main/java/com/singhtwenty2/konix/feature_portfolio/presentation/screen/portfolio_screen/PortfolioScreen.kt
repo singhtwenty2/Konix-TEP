@@ -1,10 +1,6 @@
-package com.singhtwenty2.konix.feature_order_placing.presentation.screen.order_detail_screen
+package com.singhtwenty2.konix.feature_portfolio.presentation.screen.portfolio_screen
 
-import android.content.Context
-import android.os.Build
-import android.os.Vibrator
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
@@ -14,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -29,14 +24,12 @@ import androidx.navigation.NavController
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.singhtwenty2.konix.core.ui.theme.ZERODHA_DARK
-import com.singhtwenty2.konix.feature_home.presentation.screen.home_screen.HomeScreenUiEvents
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun OrderScreenComposable(
+fun PortfolioScreenComposable(
     modifier: Modifier = Modifier,
-    navController: NavController,
-    viewModel: OrderDetailViewModel = hiltViewModel()
+    viewModel: PortfolioScreenViewModel = hiltViewModel(),
+    navController: NavController
 ) {
     val state = viewModel.state.value
     val context = LocalContext.current
@@ -47,7 +40,7 @@ fun OrderScreenComposable(
     SwipeRefresh(
         state = swipeRefreshState,
         onRefresh = {
-            viewModel.onEvent(OrderDetailUiEvent.RefreshOrder)
+            viewModel.onEvent(PortfolioScreenUiEvent.OnRefresh)
         }
     ) {
         Column(
@@ -68,7 +61,7 @@ fun OrderScreenComposable(
             }
             Text(
                 modifier = Modifier.padding(vertical = 4.dp),
-                text = "Order History",
+                text = "Portfolio Details",
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.primary
@@ -76,11 +69,12 @@ fun OrderScreenComposable(
             LazyColumn(
                 modifier = Modifier.fillMaxSize()
             ) {
-                itemsIndexed(
-                    items = state.order.reversed(),
-                    key = { _, order -> order.orderId }
-                ) { _, order ->
-                    OrderDetailComposable(order = order)
+                items(
+                    count = state.portfolio.size
+                ) {
+                    PortfolioDetailComponent(
+                        portfolio = state.portfolio[it]
+                    )
                 }
             }
         }

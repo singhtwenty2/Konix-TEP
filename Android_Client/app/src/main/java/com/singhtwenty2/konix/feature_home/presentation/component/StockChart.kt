@@ -37,6 +37,7 @@ fun StockChartComposable(
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
     val uiColor = if (isSystemInDarkTheme()) ZERODHA_DARK else MaterialTheme.colorScheme.background
     val digitColor = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primary
+    val pivotColor = if (isSystemInDarkTheme()) Color.WHITE else Color.BLACK
 
     AndroidView(
         factory = { context ->
@@ -103,7 +104,7 @@ fun StockChartComposable(
                 val lineColor = if (isIncreasing) Color.GREEN else RED.hashCode()
                 val dataSet = LineDataSet(entries, "Stock Prices").apply {
                     color = lineColor
-                    valueTextColor = Color.BLACK
+                    valueTextColor = pivotColor
                     lineWidth = 2f
                     setDrawCircles(true)
                     setDrawValues(true)

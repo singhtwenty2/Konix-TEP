@@ -28,6 +28,7 @@ import com.singhtwenty2.konix.feature_home.presentation.screen.home_screen.HomeS
 import com.singhtwenty2.konix.feature_home.presentation.screen.stock_chart_screen.StockChartScreenComposable
 import com.singhtwenty2.konix.feature_order_placing.presentation.screen.buyer_screen.BuyerScreenComposable
 import com.singhtwenty2.konix.feature_order_placing.presentation.screen.order_detail_screen.OrderScreenComposable
+import com.singhtwenty2.konix.feature_portfolio.presentation.screen.portfolio_screen.PortfolioScreenComposable
 import com.singhtwenty2.konix.feature_profile.presentation.profile_screen.ProfileScreenComposable
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -120,12 +121,7 @@ fun AppNavigatorComposable(
                 ProfileScreenComposable(navController = navHostController)
             }
             composable("portfolio_screen") {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(text = "Portfolio Screen")
-                }
+                PortfolioScreenComposable(navController = navHostController)
             }
             composable(
                 route = "buy_screen/{companyId}/{orderType}",

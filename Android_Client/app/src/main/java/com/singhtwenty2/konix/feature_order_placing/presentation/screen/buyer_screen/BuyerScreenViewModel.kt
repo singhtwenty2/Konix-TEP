@@ -28,7 +28,7 @@ class BuyerScreenViewModel @Inject constructor(
         viewModelScope.launch {
             while (true) {
                 fetchPrice(companyId)
-                delay(2000)
+                delay(1000)
             }
         }
     }

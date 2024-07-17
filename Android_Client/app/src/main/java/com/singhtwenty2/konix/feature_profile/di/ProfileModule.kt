@@ -20,7 +20,7 @@ object ProfileModule {
     @Singleton
     fun providesProfileRemoteService(): ProfileRemoteService {
         return Retrofit.Builder()
-            .baseUrl("http://192.168.0.168:7777/")
+            .baseUrl("http://172.20.10.2:7777/")
             .addConverterFactory(MoshiConverterFactory.create())
             .build()
             .create(ProfileRemoteService::class.java)

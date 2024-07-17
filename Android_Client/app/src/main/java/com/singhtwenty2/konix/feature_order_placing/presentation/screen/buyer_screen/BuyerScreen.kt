@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Money
 import androidx.compose.material.icons.rounded.Quiz
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -117,7 +118,7 @@ fun BuyerScreenComposable(
     LaunchedEffect(viewModel, companyId) {
         viewModel.startFetchingPrice(companyId)
         while (true) {
-            for (i in 2 downTo 0) {
+            for (i in 1 downTo 0) {
                 timerState.intValue = i
                 delay(1000)
             }
@@ -184,10 +185,10 @@ fun BuyerScreenComposable(
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.onSurface
             )
-            Spacer(modifier = Modifier.width(4.dp))
+            Spacer(modifier = Modifier.width(6.dp))
             FormInputFieldComposable(
                 label = "Quantity",
-                icon = Icons.Rounded.Quiz,
+                icon = Icons.Rounded.Money,
                 keyboardType = KeyboardType.Number,
                 keyboardCapitalization = KeyboardCapitalization.None,
                 autocorrect = false,
@@ -202,8 +203,8 @@ fun BuyerScreenComposable(
         }
         Text(
             modifier = Modifier
-                .padding(vertical = 4.dp),
-            text = "Fetching price in ${timerState.intValue} seconds...",
+                .padding(vertical = 16.dp),
+            text = "Automatic price fetching in ${timerState.intValue} seconds...",
             style = MaterialTheme.typography.labelLarge,
             color = MaterialTheme.colorScheme.onSurface
         )
