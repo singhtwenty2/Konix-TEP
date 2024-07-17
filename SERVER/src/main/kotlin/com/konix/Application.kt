@@ -1,12 +1,10 @@
 package com.konix
 
+import com.konix.configs.*
 import com.konix.security.token.JwtTokenService
 import com.konix.security.token.TokenConfig
-import com.konix.configs.*
-import com.konix.data.dto.request.SignupSessionRequestDTO
 import com.konix.util.stockPriceUpdater
 import io.ktor.server.application.*
-import io.ktor.server.sessions.*
 
 fun main(args: Array<String>) {
     io.ktor.server.netty.EngineMain.main(args)
@@ -31,6 +29,6 @@ fun Application.module() {
     configureSecurity(tokenConfig)
     configureRouting(tokenConfig, tokenService)
     //insertDummyStockPrices()
-     stockPriceUpdater()
+    stockPriceUpdater()
     //autoInsertionToCompanyExchangeScript()
 }

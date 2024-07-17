@@ -11,9 +11,8 @@ import java.math.RoundingMode
 import java.time.LocalDateTime
 import kotlin.random.Random
 
-data class StockTrend(var basePrice: BigDecimal, var trendDirection: Int) // 1 for upward, -1 for downward
+data class StockTrend(var basePrice: BigDecimal, var trendDirection: Int)
 
-// Initialize stock trends for each company
 val stockTrends = mutableMapOf<Int, StockTrend>()
 
 fun stockPriceUpdater() {
