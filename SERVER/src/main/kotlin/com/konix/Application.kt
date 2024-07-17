@@ -31,6 +31,6 @@ fun Application.module() {
     configureSecurity(tokenConfig)
     configureRouting(tokenConfig, tokenService)
     //insertDummyStockPrices()
-    //stockPriceUpdater()
+     stockPriceUpdater()
     //autoInsertionToCompanyExchangeScript()
 }

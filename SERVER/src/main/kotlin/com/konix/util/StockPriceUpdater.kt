@@ -11,18 +11,41 @@ import java.math.RoundingMode
 import java.time.LocalDateTime
 import kotlin.random.Random
 
+data class StockTrend(var basePrice: BigDecimal, var trendDirection: Int) // 1 for upward, -1 for downward
+
+// Initialize stock trends for each company
+val stockTrends = mutableMapOf<Int, StockTrend>()
+
 fun stockPriceUpdater() {
     val scope = CoroutineScope(Dispatchers.Default)
     scope.launch {
         while (isActive) {
             transaction {
                 Companies.selectAll().forEach { resultRow ->
-                    val newPrice = BigDecimal(Random.nextDouble(100.0, 1500.0)).setScale(2, RoundingMode.HALF_EVEN)
+                    val companyId = resultRow[Companies.companyId]
+                    val currentTrend = stockTrends.getOrPut(companyId) {
+                        StockTrend(
+                            basePrice = BigDecimal(Random.nextDouble(100.0, 1500.0)).setScale(2, RoundingMode.HALF_EVEN),
+                            trendDirection = if (Random.nextBoolean()) 1 else -1
+                        )
+                    }
+
+                    // Adjust base price periodically
+                    if (Random.nextDouble() < 0.1) { // 10% chance to change trend direction
+                        currentTrend.trendDirection *= -1
+                    }
+                    currentTrend.basePrice = currentTrend.basePrice.add(
+                        BigDecimal(currentTrend.trendDirection * Random.nextDouble(1.0, 5.0)).setScale(2, RoundingMode.HALF_EVEN)
+                    )
+
+                    // Apply random fluctuation
+                    val fluctuation = BigDecimal(Random.nextDouble(-2.0, 2.0)).setScale(2, RoundingMode.HALF_EVEN)
+                    val newPrice = currentTrend.basePrice.add(fluctuation).setScale(2, RoundingMode.HALF_EVEN)
+
                     StockPrices.insert {
-                        it[companyId] = resultRow[Companies.companyId]
+                        it[StockPrices.companyId] = companyId
                         it[timestamp] = LocalDateTime.now().toString()
                         it[price] = newPrice
-
                     }
                 }
             }
