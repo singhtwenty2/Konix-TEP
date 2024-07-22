@@ -41,10 +41,13 @@ fun stockPriceUpdater() {
                     val fluctuation = BigDecimal(Random.nextDouble(-2.0, 2.0)).setScale(2, RoundingMode.HALF_EVEN)
                     val newPrice = currentTrend.basePrice.add(fluctuation).setScale(2, RoundingMode.HALF_EVEN)
 
+                    // Ensure the new price is not negative
+                    val validPrice = if (newPrice < BigDecimal.ZERO) BigDecimal.ZERO else newPrice
+
                     StockPrices.insert {
                         it[StockPrices.companyId] = companyId
                         it[timestamp] = LocalDateTime.now().toString()
-                        it[price] = newPrice
+                        it[price] = validPrice
                     }
                 }
             }
