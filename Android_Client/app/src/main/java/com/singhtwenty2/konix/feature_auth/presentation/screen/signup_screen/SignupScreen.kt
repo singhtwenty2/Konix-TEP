@@ -44,6 +44,7 @@ import com.singhtwenty2.konix.R
 import com.singhtwenty2.konix.core.ui.theme.ZERODHA_DARK
 import com.singhtwenty2.konix.feature_auth.presentation.component.FormInputFieldComposable
 import com.singhtwenty2.konix.feature_auth.presentation.component.CustomDropdownComposable
+import com.singhtwenty2.konix.feature_auth.presentation.component.SecuredInputFieldCompasable
 import com.singhtwenty2.konix.feature_auth.presentation.component.TopSegmentComposable
 import com.singhtwenty2.konix.feature_auth.util.AuthResponseHandler
 
@@ -165,9 +166,8 @@ fun SignupScreenComposable(
             viewModel.onEvent(SignupUiEvent.GenderChanged(it))
         }
         Spacer(modifier = Modifier.height(16.dp))
-        FormInputFieldComposable(
+        SecuredInputFieldCompasable(
             label = "Password",
-            icon = Icons.Rounded.Lock,
             keyboardType = KeyboardType.Password,
             keyboardCapitalization = KeyboardCapitalization.None,
             autocorrect = false,
@@ -176,9 +176,8 @@ fun SignupScreenComposable(
             viewModel.onEvent(SignupUiEvent.PasswordChanged(it))
         }
         Spacer(modifier = Modifier.height(16.dp))
-        FormInputFieldComposable(
+        SecuredInputFieldCompasable(
             label = "Confirm Password",
-            icon = Icons.TwoTone.Lock,
             keyboardType = KeyboardType.Password,
             keyboardCapitalization = KeyboardCapitalization.None,
             autocorrect = false,

@@ -39,6 +39,7 @@ import androidx.navigation.NavController
 import com.singhtwenty2.konix.R
 import com.singhtwenty2.konix.core.ui.theme.ZERODHA_DARK
 import com.singhtwenty2.konix.feature_auth.presentation.component.FormInputFieldComposable
+import com.singhtwenty2.konix.feature_auth.presentation.component.SecuredInputFieldCompasable
 import com.singhtwenty2.konix.feature_auth.presentation.component.TopSegmentComposable
 import com.singhtwenty2.konix.feature_auth.util.AuthResponseHandler
 
@@ -192,9 +193,8 @@ fun LoginScreenComposable(
             viewModel.onEvent(LoginUiEvent.EmailChanged(it))
         }
         Spacer(modifier = Modifier.height(16.dp))
-        FormInputFieldComposable(
+        SecuredInputFieldCompasable(
             label = "Password",
-            icon = Icons.Rounded.Lock,
             keyboardType = KeyboardType.Password,
             keyboardCapitalization = KeyboardCapitalization.None,
             autocorrect = false,
