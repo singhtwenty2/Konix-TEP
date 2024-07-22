@@ -28,27 +28,21 @@ class OtpService(
     }
 
     fun saveOtpInDb(
-        userEmail: String
+        userEmail: String,
+        otp: String
     ): Boolean {
-        val otp = generateOtp()
         val hashOtp = hashOtp(otp)
         val expiry = System.currentTimeMillis() + 8 * 60 * 1000
         val now = dateFormat.format(Date())
 
-        val isOtpSent = emailService.sendOtpAsEmail(userEmail, otp)
+        OtpDAO.insertOtpInDB(
+            userEmail = userEmail,
+            hashedOtp = hashOtp,
+            expiry = expiry,
+            updatedAt = now
+        )
 
-        if (isOtpSent) {
-            OtpDAO.insertOtpInDB(
-                userEmail = userEmail,
-                hashedOtp = hashOtp,
-                expiry = expiry,
-                updatedAt = now
-            )
-        } else {
-            println("Failed to send OTP to $userEmail")
-            //Log.error("Failed to send OTP to $userEmail")
-        }
-        return isOtpSent
+        return true
     }
 
     fun verifyOtp(

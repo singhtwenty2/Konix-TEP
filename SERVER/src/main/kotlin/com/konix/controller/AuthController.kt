@@ -40,8 +40,10 @@ fun Route.signup(
             call.respond(HttpStatusCode.Conflict, "User Already Exists With This Email $userEmail...")
             return@post
         } else {
-            if (emailService.sendOtpAsEmail(userEmail = userEmail, otp = otpService.generateOtp())) {
+            val otp = otpService.generateOtp()
+            if (emailService.sendOtpAsEmail(userEmail = userEmail, otp = otp)) {
                 logger.info("OTP sent to email: $userEmail")
+
                 call.sessions.set(SignupSessionRequestDTO(
                     email = requestDTO.email,
                     name = requestDTO.name,
@@ -50,11 +52,12 @@ fun Route.signup(
                     password = requestDTO.password
                 ))
                 call.respond(HttpStatusCode.OK, "OTP Sent To $userEmail...")
-                otpService.saveOtpInDb(userEmail)
+                otpService.saveOtpInDb(userEmail, otp)
             } else {
                 logger.error("Failed to send OTP to email: $userEmail")
                 call.respond(HttpStatusCode.InternalServerError, "Failed To Send OTP To $userEmail...")
             }
+
         }
     }
 
