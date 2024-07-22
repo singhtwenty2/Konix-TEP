@@ -48,7 +48,22 @@ class BuyerScreenViewModel @Inject constructor(
             }
 
             is BuyerUiEvent.BuyClicked -> {
-                orderPlaced(
+                placeMarketOrder(
+                    companyId = event.companyId,
+                    orderType = event.orderType
+                )
+            }
+
+            is BuyerUiEvent.LimitPriceChanged -> {
+                updateState { copy(limitPrice = event.limitPrice) }
+            }
+
+            is BuyerUiEvent.LimitOrderTriggered -> {
+                updateState { copy(isLimitOrder = event.isLimitOrder) }
+            }
+
+            is BuyerUiEvent.LimitOrderPlaced -> {
+                placeLimitOrder(
                     companyId = event.companyId,
                     orderType = event.orderType
                 )
@@ -56,7 +71,7 @@ class BuyerScreenViewModel @Inject constructor(
         }
     }
 
-    private fun orderPlaced(
+    private fun placeMarketOrder(
         companyId: Int,
         orderType: String
     ) {
@@ -65,6 +80,25 @@ class BuyerScreenViewModel @Inject constructor(
             val result = orderRepository.placeOrder(
                 OrderRequest(
                     price = state.value.price,
+                    quantity = state.value.quantity,
+                    companyId = companyId,
+                    orderType = orderType
+                )
+            )
+            orderChannel.send(result)
+            updateState { copy(isLoading = false) }
+        }
+    }
+
+    private fun placeLimitOrder(
+        companyId: Int,
+        orderType: String
+    ) {
+        viewModelScope.launch {
+            updateState { copy(isLoading = true) }
+            val result = orderRepository.placeOrder(
+                OrderRequest(
+                    price = state.value.limitPrice,
                     quantity = state.value.quantity,
                     companyId = companyId,
                     orderType = orderType

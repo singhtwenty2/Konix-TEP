@@ -5,4 +5,6 @@ data class BuyerScreenState(
     val quantity: Int = 1,
     val isLoading: Boolean = false,
     val isError: Boolean = false,
+    val limitPrice: Double = 100.0,
+    val isLimitOrder: Boolean = false,
 )

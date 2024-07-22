@@ -8,4 +8,10 @@ sealed class BuyerUiEvent {
         val orderType: String
     ) : BuyerUiEvent()
     data class Refreshed(val companyId: Int) : BuyerUiEvent()
+    data class LimitPriceChanged(val limitPrice: Double) : BuyerUiEvent()
+    data class LimitOrderTriggered(val isLimitOrder: Boolean) : BuyerUiEvent()
+    data class LimitOrderPlaced(
+        val companyId: Int,
+        val orderType: String
+    ) : BuyerUiEvent()
 }
