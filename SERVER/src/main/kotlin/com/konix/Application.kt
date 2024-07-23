@@ -3,6 +3,7 @@ package com.konix
 import com.konix.configs.*
 import com.konix.security.token.JwtTokenService
 import com.konix.security.token.TokenConfig
+import com.konix.util.autoInsertionToCompanyExchangeScript
 import com.konix.util.stockPriceUpdater
 import io.ktor.server.application.*
 
@@ -30,5 +31,5 @@ fun Application.module() {
     configureRouting(tokenConfig, tokenService)
     //insertDummyStockPrices()
     stockPriceUpdater()
-    //autoInsertionToCompanyExchangeScript()
+//    autoInsertionToCompanyExchangeScript()
 }

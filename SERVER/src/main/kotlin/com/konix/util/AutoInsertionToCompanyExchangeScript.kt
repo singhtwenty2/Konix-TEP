@@ -6,7 +6,7 @@ import io.ktor.server.application.*
 
 fun Application.autoInsertionToCompanyExchangeScript() {
     val exchanges = listOf(1, 2)
-    val companies = (45..50).toList()
+    val companies = (1..4).toList()
 
     companies.forEach { companyId->
         exchanges.forEach { exchangeId->
