@@ -1,5 +1,6 @@
 package com.konix.configs
 
+import com.konix.data.repository.entity.*
 import io.ktor.server.application.*
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -12,4 +13,20 @@ fun Application.configureDatabases() {
         user = System.getenv("USER"),
         password = System.getenv("PASSWORD")
     )
+    transaction {
+
+        SchemaUtils.create(
+            Users,
+            KYC,
+            DematAccounts,
+            Companies,
+            Exchanges,
+            CompanyExchanges,
+            StockPrices,
+            Orders,
+            Transactions,
+            Portfolios,
+            Otps
+        )
+    }
 }
